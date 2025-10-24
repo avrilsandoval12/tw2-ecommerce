@@ -1,0 +1,13 @@
+node_modules/
+dist/
+build/
+.out/
+.tmp/
+coverage/
+*.env
+*.env.*.local
+/.angular
+/.angular/cache
+.vscode/
+.idea/
+.DS_Store
