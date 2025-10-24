@@ -1,0 +1,22 @@
+# Node / Angular / Prisma
+node_modules/
+dist/
+build/
+.out/
+.tmp/
+coverage/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+# Env
+*.env
+*.env.*.local
+# Prisma
+prisma/*.db
+# Angular extra
+/.angular/cache
+/.angular
+/.vscode
+.idea/
+.DS_Store
