@@ -1,0 +1,64 @@
+@if (spinner()) {
+  <div class="loading-container">
+    Cargando detalle del producto... 
+  </div>
+}
+
+@if (error() && !spinner()) {
+  <div class="error-message">
+    Error: {{ error() }}
+  </div>
+}
+
+@if (product() && !spinner() && !error()) {
+  <div class="product-detail-container">
+    
+    <div class="product-image">
+      @if (product()!.imageUrl) {
+        <img [src]="product()!.imageUrl" [alt]="'Imagen de ' + product()!.name">
+      } @else {
+        <div class="no-image">
+          Sin imagen disponible
+        </div>
+      }
+    </div>
+
+    <div class="product-info">
+      <h1>{{ product()!.name }}</h1>
+      
+      <p class="description">{{ product()!.description }}</p>
+      
+      <div class="details">
+        <p><strong>Clasificación:</strong> {{ product()!.classification }}</p>
+        <p><strong>Precio:</strong> ${{ product()!.price | number:'1.2-2' }}</p>
+        <p><strong>Stock disponible:</strong> {{ product()!.stock }} unidades</p>
+      </div>
+
+      @if (isInCart()) {
+        <div class="in-cart-message">
+          ✓ Producto en el carrito ({{ cartService.getProductQuantity(product()!.id) }} unidades)
+        </div>
+      }
+
+      <button 
+        class="add-to-cart-btn" 
+        [disabled]="product()!.stock === 0 || addingToCart()"
+        (click)="addToCart()">
+        @if (addingToCart()) {
+          Agregando...
+        } @else if (product()!.stock === 0) {
+          Sin Stock
+        } @else {
+          {{ isInCart() ? 'Agregar Más' : 'Añadir al Carrito' }}
+        }
+      </button>
+    </div>
+
+  </div>
+}
+
+@if (!product() && !spinner() && !error()) {
+  <div class="not-found">
+    Producto no encontrado.
+  </div>
+}
