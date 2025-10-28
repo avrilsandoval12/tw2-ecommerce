@@ -1,0 +1,21 @@
+<section class="home">
+  <div class="carousel-novedades">
+    <carousel [interval]="4000" [noPause]="true">
+      @for (item of novedades(); track item.id) {
+      <slide>
+        <img [src]="item.imagen" [alt]="item.titulo" class="img-fluid">
+      </slide>
+      }
+    </carousel>
+  </div>
+
+  <div class="productos mt-5">
+    <h2 class="text-center mb-3">Productos destacados</h2>
+
+    <div class="carousel-productos d-flex overflow-auto gap-3 px-3">
+      @for (producto of productos(); track producto.id) {
+      <app-product-card [producto]="producto"></app-product-card>
+      }
+    </div>
+  </div>
+</section>
