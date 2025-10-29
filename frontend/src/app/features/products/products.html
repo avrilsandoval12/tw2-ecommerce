@@ -1,0 +1,17 @@
+<div class="filtros">
+  <input type="text" placeholder="Buscar por nombre..." [(ngModel)]="filtros().nombre" (input)="aplicarFiltros()">
+
+  <select [(ngModel)]="filtros().categoria" (change)="aplicarFiltros()">
+    <option value="">Todas las categorías</option>
+    <option *ngFor="let cat of categoryService.categorias()" [value]="cat.nombre">{{ cat.nombre }}</option>
+  </select>
+
+  <input type="number" placeholder="Precio mínimo" [(ngModel)]="filtros().precioMin" (input)="aplicarFiltros()">
+  <input type="number" placeholder="Precio máximo" [(ngModel)]="filtros().precioMax" (input)="aplicarFiltros()">
+
+  <button (click)="limpiarFiltros()">Limpiar filtros</button>
+</div>
+
+<div class="productos">
+  <app-product-card *ngFor="let producto of productService.productosFiltrados()" [producto]="producto"></app-product-card>
+</div>
