@@ -1,0 +1,21 @@
+.home {
+  .carousel-novedades {
+    overflow: hidden;
+    img {
+      width: 100%;
+      object-fit: cover;
+      height: 600px;
+    }
+  }
+
+  .productos {
+    .carousel-productos {
+      scroll-behavior: smooth;
+      padding-bottom: 1rem;
+
+      &::-webkit-scrollbar {
+        display: none;
+      }
+    }
+  }
+}

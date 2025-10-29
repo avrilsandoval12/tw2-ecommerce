@@ -1,0 +1,17 @@
+<div class="product-card">
+  <div class="image-container">
+    <img [src]="producto.imagen" [alt]="producto.nombre" loading="lazy" />
+  </div>
+
+  <div class="info">
+    <h3 class="nombre">{{ producto.nombre }}</h3>
+
+    <p class="precio">
+      {{ producto.precio | currency:'ARS':'symbol':'1.0-0' }}
+    </p>
+
+    <button class="btn-agregar">
+      Agregar al carrito
+    </button>
+  </div>
+</div>
