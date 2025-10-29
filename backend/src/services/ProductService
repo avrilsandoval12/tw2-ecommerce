@@ -1,0 +1,28 @@
+import type { ProductRepository } from "../repository/ProductRepository.js";
+
+export class ProductService {
+
+    constructor(private readonly productRepository: ProductRepository) {}
+
+    async getAllProducts() {
+
+        return await this.productRepository.findAllProducts();
+    }
+
+    async getProductById(id: number) {
+        return await this.productRepository.findProductById(id);
+    }
+
+    async createProduct(product: any) {
+        return await this.productRepository.createProduct(product);
+    }
+
+    async updateProduct(id: number, product: any) {
+        return await this.productRepository.updateProduct(id, product);
+    }
+    async deleteProduct(id: number) {
+        return await this.productRepository.deleteProduct(id);
+    }   
+
+
+}

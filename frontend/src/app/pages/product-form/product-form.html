@@ -1,0 +1,175 @@
+<div class="product-form-container">
+
+  <h2 class="form-title">
+    @if (modoEdicion) {
+      Editar Producto 📝
+    } @else {
+      Crear Nuevo Producto ✨
+    }
+  </h2>
+
+  <form [formGroup]="productForm" (ngSubmit)="onSubmit()" class="product-form">
+
+    <div class="form-group">
+      <label for="name">Nombre</label>
+      <input id="name" type="text" formControlName="name" placeholder="Nombre del producto">
+      @if (name && name.invalid && (name.dirty || name.touched)) {
+        <div class="error-message">
+          @if (name.errors?.['required']) {
+            <span>El nombre es obligatorio.</span>
+          }
+          @if (name.errors?.['maxlength']) {
+            <span>El nombre no puede exceder los 100 caracteres.</span>
+          }
+        </div>
+      }
+    </div>
+
+    <div class="form-group">
+      <label for="description">Descripción</label>
+      <textarea id="description" formControlName="description" rows="3" placeholder="Descripción detallada del producto"></textarea>
+      @if (description && description.invalid && (description.dirty || description.touched)) {
+        <div class="error-message">
+          @if (description.errors?.['required']) {
+            <span>La descripción es obligatoria.</span>
+          }
+          @if (description.errors?.['maxlength']) {
+            <span>La descripción no puede exceder los 500 caracteres.</span>
+          }
+        </div>
+      }
+    </div>
+
+    <div class="form-group-row">
+      <div class="form-group">
+        <label for="price">Precio ($)</label>
+        <input id="price" type="number" formControlName="price" placeholder="0.00">
+        @if (price && price.invalid && (price.dirty || price.touched)) {
+          <div class="error-message">
+            @if (price.errors?.['required']) {
+              <span>El precio es obligatorio.</span>
+            }
+            @if (price.errors?.['min']) {
+              <span>El precio debe ser mayor o igual a 0.</span>
+            }
+          </div>
+        }
+      </div>
+
+      <div class="form-group">
+        <label for="stock">Stock</label>
+        <input id="stock" type="number" formControlName="stock" placeholder="0">
+        @if (stock && stock.invalid && (stock.dirty || stock.touched)) {
+          <div class="error-message">
+            @if (stock.errors?.['required']) {
+              <span>El stock es obligatorio.</span>
+            }
+            @if (stock.errors?.['min']) {
+              <span>El stock debe ser mayor o igual a 0.</span>
+            }
+          </div>
+        }
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label for="classification">Clasificación</label>
+      <input id="classification" type="text" formControlName="classification" placeholder="Ej: Electrónica, Ropa, etc.">
+      @if (classification && classification.invalid && (classification.dirty || classification.touched)) {
+        <div class="error-message">
+          @if (classification.errors?.['required']) {
+            <span>La clasificación es obligatoria.</span>
+          }
+        </div>
+      }
+    </div>
+
+    <div class="form-group">
+      <label for="imageUrl">URL de la Imagen</label>
+      <input id="imageUrl" type="url" formControlName="imageUrl" placeholder="http://o-https://imagen.com/ruta.jpg">
+      @if (imageUrl && imageUrl.invalid && (imageUrl.dirty || imageUrl.touched)) {
+        <div class="error-message">
+          @if (imageUrl.errors?.['required']) {
+            <span>La URL de la imagen es obligatoria.</span>
+          }
+        </div>
+      }
+    </div>
+
+    <div class="form-actions">
+      <button
+        type="submit"
+        [disabled]="productForm.invalid"
+        class="submit-button"
+      >
+        @if (modoEdicion) {
+          Guardar Cambios
+        } @else {
+          Crear Producto
+        }
+      </button>
+
+      <button
+        type="button"
+        (click)="resetForm()"
+        class="reset-button"
+      >
+        @if (modoEdicion) {
+          Cancelar Edición
+        } @else {
+          Limpiar
+        }
+      </button>
+    </div>
+
+  </form>
+
+  ---
+
+  <h3 class="list-title">Productos Existentes ({{ products.length }}) 📦</h3>
+
+  @if (spinner) {
+    <div class="loading-container">
+      <div class="spinner"></div>
+      <p>Cargando productos...</p>
+    </div>
+  } @else if (products.length === 0) {
+    <div class="empty-list-message">
+      <p>No hay productos registrados. ¡Crea el primero! 🚀</p>
+    </div>
+  } @else {
+    <div class="products-table-wrapper">
+      <table class="products-table">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Nombre</th>
+            <th>Clasificación</th>
+            <th>Precio</th>
+            <th>Stock</th>
+            <th>Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (product of products; track product.id) {
+            <tr [class.editing-row]="modoEdicion && productoEditandoId === product.id">
+              <td>{{ product.id }}</td>
+              <td>{{ product.name }}</td>
+              <td>{{ product.classification }}</td>
+              <td>${{ product.price | number:'1.2-2' }}</td>
+              <td>{{ product.stock }}</td>
+              <td class="action-buttons-cell">
+                <button (click)="editarProducto(product)" class="edit-button">
+                  Editar
+                </button>
+                <button (click)="eliminarProducto(product.id!)" class="delete-button">
+                  Eliminar
+                </button>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  }
+</div>

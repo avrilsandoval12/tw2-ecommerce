@@ -56,4 +56,47 @@ export class ProductController {
       res.status(500).json({ error: 'Error al obtener producto' });
     }
   };
+
+
+  static createProduct = async (req: Request, res: Response) => {
+    try {
+      const productData = req.body;
+      const newProduct = await prisma.product.create({
+        data: productData
+      });
+      res.status(201).json(newProduct);
+    } catch (error) {
+      console.error('Error al crear producto:', error);
+      res.status(500).json({ error: 'Error al crear producto' });
+    }
+
+  };
+  static updateProduct = async (req: Request, res: Response) => {
+    try {
+      const { id } = req.params;
+      const productData = req.body;
+      const updatedProduct = await prisma.product.update({
+        where: { id: parseInt(id) },
+        data: productData
+      });
+      res.json(updatedProduct);
+    } catch (error) {
+      console.error('Error al actualizar producto:', error);
+      res.status(500).json({ error: 'Error al actualizar producto' });
+    }
+
+  };
+  static deleteProduct = async (req: Request, res: Response) => {
+    try {
+      const { id } = req.params;
+      await prisma.product.delete({
+        where: { id: parseInt(id) }
+      });
+      res.status(204).send();
+    } catch (error) {
+      console.error('Error al eliminar producto:', error);
+      res.status(500).json({ error: 'Error al eliminar producto' });
+    }
+
+  };  
 }
