@@ -1,0 +1,130 @@
+<div class="min-h-screen bg-background">
+
+  @if (spinner()) {
+    <div class="loading-container">
+      <div class="spinner"></div>
+      <p>Cargando detalle del producto...</p>
+    </div>
+  }
+
+  @if (error() && !spinner()) {
+    <div class="error-container">
+      <p class="error-message">{{ error() }}</p>
+      <button class="back-button">Volver a productos</button>
+    </div>
+  }
+
+  @if (product() && !spinner() && !error()) {
+    <div class="product-container">
+      <div class="product-grid">
+
+        <div class="image-section">
+          <div class="image-sticky">
+            <div class="image-wrapper">
+              @if (product()!.imageUrl) {
+                <img
+                  [src]="product()!.imageUrl"
+                  [alt]="product()!.name"
+                  class="product-image">
+              } @else {
+                <div class="no-image">
+                  <span>Sin imagen disponible</span>
+                </div>
+              }
+            </div>
+          </div>
+        </div>
+
+        <div class="info-section">
+          <div class="info-content">
+            <div class="badge-container">
+              <span class="badge">{{ product()!.classification }}</span>
+            </div>
+            <h2 class="product-name">{{ product()!.name }}</h2>
+            <div class="price-container">
+              <span class="price">${{ product()!.price | number:'1.2-2' }}</span>
+            </div>
+            <div class="stock-status">
+              <span class="package-icon">📦</span>
+              @if (product()!.stock > 0) {
+                <span class="stock-text">
+                  <strong>{{ product()!.stock }}</strong> unidades disponibles
+                </span>
+              } @else {
+                <span class="out-of-stock">Sin stock</span>
+              }
+            </div>
+
+            <div class="divider"></div>
+            <div class="description-section">
+              <h3 class="section-title">Descripción</h3>
+              <p class="description-text">{{ product()!.description }}</p>
+            </div>
+
+             <div class="divider"></div>
+            <div class="quantity-section">
+              <h3 class="section-title">Cantidad</h3>
+              <div class="quantity-selector">
+                <button
+                  class="qty-button"
+                  [disabled]="quantity() <= 1"
+                  (click)="decreaseQuantity()">
+                  −
+                </button>
+                <span class="qty-display">{{ quantity() }}</span>
+                <button
+                  class="qty-button"
+                  [disabled]="quantity() >= product()!.stock"
+                  (click)="increaseQuantity()">
+                  +
+                </button>
+              </div>
+            </div>
+
+            <div class="divider"></div>
+            <div class="action-buttons">
+              <button
+                class="add-to-cart-button"
+                [disabled]="product()!.stock === 0"
+                (click)="addToCart()">
+                <span class="cart-icon">🛒</span>
+                <span>{{ isInCart() ? 'Agregar Otra Unidad' : 'Agregar al Carrito' }}</span>
+              </button>
+            </div>
+
+            @if (isInCart()) {
+              <div class="in-cart-badge">
+                ✓ {{ getCartQuantity() }} {{ getCartQuantity() === 1 ? 'unidad' : 'unidades' }} en el carrito
+              </div>
+            }
+
+            <div class="additional-info">
+              <div class="info-item">
+                <span class="bullet">•</span>
+                <p>Envío gratuito en compras superiores a $50.000</p>
+              </div>
+              <div class="info-item">
+                <span class="bullet">•</span>
+                <p>Devoluciones sin cargo dentro de los 30 días</p>
+              </div>
+              <div class="info-item">
+                <span class="bullet">•</span>
+                <p>Garantía de autenticidad y calidad premium</p>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+      </div>
+    </div>
+  }
+
+  @if (!product() && !spinner() && !error()) {
+    <div class="not-found-container">
+      <p class="not-found-message">Producto no encontrado</p>
+      <button class="back-button">Volver a productos</button>
+    </div>
+  }
+
+</div>

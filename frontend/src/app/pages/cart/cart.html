@@ -1,0 +1,57 @@
+<div class="cart-container">
+  <h1>Mi Carrito</h1>
+
+  @if (cartService.items().length === 0) {
+    <div class="empty-cart">
+      <p>Tu carrito está vacío</p>
+      <a routerLink="/products" class="continue-shopping">Ir a comprar</a>
+    </div>
+  } @else {
+    <div class="cart-items">
+      @for (item of cartService.items(); track item.product.id) {
+        <div class="cart-item">
+          <img [src]="item.product.imageUrl || 'assets/no-image.png'" 
+               [alt]="item.product.name" 
+               class="item-image">
+          
+          <div class="item-details">
+            <h3>{{ item.product.name }}</h3>
+            <p class="item-price">${{ item.product.price | number:'1.2-2' }}</p>
+          </div>
+
+          <div class="item-quantity">
+            <button (click)="decreaseQuantity(item.product.id)" class="qty-btn">-</button>
+            <span>{{ item.quantity }}</span>
+            <button (click)="increaseQuantity(item.product.id)" 
+                    class="qty-btn"
+                    [disabled]="item.quantity >= item.product.stock">+</button>
+          </div>
+
+          <div class="item-total">
+            ${{ (item.product.price * item.quantity) | number:'1.2-2' }}
+          </div>
+
+          <button (click)="removeItem(item.product.id)" class="remove-btn">
+            🗑️
+          </button>
+        </div>
+      }
+    </div>
+
+    <div class="cart-summary">
+      <div class="summary-row">
+        <span>Total de productos:</span>
+        <strong>{{ cartService.totalItems() }}</strong>
+      </div>
+      <div class="summary-row total">
+        <span>Total a pagar:</span>
+        <strong>${{ cartService.totalPrice() | number:'1.2-2' }}</strong>
+      </div>
+      
+      <div class="cart-actions">
+        <button (click)="clearCart()" class="clear-btn">Vaciar Carrito</button>
+        <button class="checkout-btn">Proceder al Pago</button>
+      </div>
+    </div>
+  }
+</div>
