@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { CartService } from '../../api/services/cart/cart';
+import { CartService } from '../../api/services/cart/cart-service';
 import { RouterLink } from '@angular/router';
 
 @Component({
@@ -11,7 +11,7 @@ import { RouterLink } from '@angular/router';
   styleUrl: './cart.css'
 })
 export class CartComponent {
-  
+
   constructor(public cartService: CartService) {}
 
   increaseQuantity(productId: number): void {

@@ -1,118 +1,130 @@
-<div class="min-h-screen bg-background">
+<div class="bg-light py-5">
 
   @if (spinner()) {
-    <div class="loading-container">
-      <div class="spinner"></div>
-      <p>Cargando detalle del producto...</p>
+    <div class="container text-center py-5">
+      <div class="spinner-border text-dark mb-3" role="status" style="width: 3rem; height: 3rem;">
+        <span class="visually-hidden">Cargando...</span>
+      </div>
+      <p class="text-muted">Cargando detalle del producto...</p>
     </div>
   }
 
   @if (error() && !spinner()) {
-    <div class="error-container">
-      <p class="error-message">{{ error() }}</p>
-      <button class="back-button">Volver a productos</button>
+    <div class="container py-5">
+      <div class="card border-0 shadow-sm text-center p-5">
+        <i class="bi bi-exclamation-triangle display-1 text-warning mb-4"></i>
+        <p class="text-danger fs-5 mb-4">{{ error() }}</p>
+        <a routerLink="/products" class="btn btn-dark btn-lg">
+          <i class="bi bi-arrow-left me-2"></i> Volver a productos
+        </a>
+      </div>
     </div>
   }
 
   @if (product() && !spinner() && !error()) {
-    <div class="product-container">
-      <div class="product-grid">
+    <div class="container-fluid px-5">
+      <div class="row g-5 justify-content-center align-items-start">
 
-        <div class="image-section">
-          <div class="image-sticky">
-            <div class="image-wrapper">
-              @if (product()!.imageUrl) {
-                <img
-                  [src]="product()!.imageUrl"
-                  [alt]="product()!.name"
-                  class="product-image">
-              } @else {
-                <div class="no-image">
-                  <span>Sin imagen disponible</span>
+        <div class="col-lg-5 col-md-6">
+          <div class="bg-white rounded shadow-sm p-2">
+            @if (product()!.imagen) {
+              <img
+                [src]="product()!.imagen"
+                [alt]="product()!.nombre"
+                class="img-fluid rounded w-100"
+                style="max-height: 480px; object-fit: cover;">
+            } @else {
+              <div class="d-flex justify-content-center align-items-center bg-white rounded shadow-sm" style="height: 480px;">
+                <div class="text-center text-muted">
+                  <i class="bi bi-image display-1 mb-3"></i>
+                  <p class="mb-0">Sin imagen disponible</p>
                 </div>
-              }
-            </div>
+              </div>
+            }
           </div>
         </div>
 
-        <div class="info-section">
-          <div class="info-content">
-            <div class="badge-container">
-              <span class="badge">{{ product()!.classification }}</span>
-            </div>
-            <h2 class="product-name">{{ product()!.name }}</h2>
-            <div class="price-container">
-              <span class="price">${{ product()!.price | number:'1.2-2' }}</span>
-            </div>
-            <div class="stock-status">
-              <span class="package-icon">📦</span>
-              @if (product()!.stock > 0) {
-                <span class="stock-text">
-                  <strong>{{ product()!.stock }}</strong> unidades disponibles
-                </span>
-              } @else {
-                <span class="out-of-stock">Sin stock</span>
-              }
-            </div>
+        <div class="col-lg-7 col-md-6">
+          <div class="card border-0 shadow-sm">
+            <div class="card-body p-5">
 
-            <div class="divider"></div>
-            <div class="description-section">
-              <h3 class="section-title">Descripción</h3>
-              <p class="description-text">{{ product()!.description }}</p>
-            </div>
+              <span class="badge bg-dark text-white mb-3 px-3 py-2">
+                {{ product()!.categoria }}
+              </span>
 
-             <div class="divider"></div>
-            <div class="quantity-section">
-              <h3 class="section-title">Cantidad</h3>
-              <div class="quantity-selector">
-                <button
-                  class="qty-button"
-                  [disabled]="quantity() <= 1"
-                  (click)="decreaseQuantity()">
-                  −
-                </button>
-                <span class="qty-display">{{ quantity() }}</span>
-                <button
-                  class="qty-button"
-                  [disabled]="quantity() >= product()!.stock"
-                  (click)="increaseQuantity()">
-                  +
-                </button>
+              <h2 class="fw-bold mb-3">{{ product()!.nombre }}</h2>
+
+              <p class="fs-3 fw-bold text-success mb-4">
+                {{ product()!.precio | currency:'ARS':'symbol':'1.0-0' }}
+              </p>
+
+              <div class="alert alert-light border d-flex align-items-center gap-2 mb-4">
+                <i class="bi bi-box-seam fs-5"></i>
+                @if (product()!.stock > 0) {
+                  <span>
+                    <strong>{{ product()!.stock - getCartQuantity() }}</strong> unidades disponibles
+                  </span>
+                } @else {
+                  <span class="text-danger fw-semibold">Sin stock</span>
+                }
               </div>
-            </div>
 
-            <div class="divider"></div>
-            <div class="action-buttons">
+              <p class="text-muted mb-4">{{ product()!.descripcion }}</p>
+
+              <div class="d-flex align-items-center justify-content-between mb-4">
+                <h6 class="fw-bold mb-0">Cantidad</h6>
+                <div class="d-flex align-items-center gap-3">
+                  <button
+                    class="btn btn-outline-secondary rounded-circle d-flex align-items-center justify-content-center"
+                    style="width: 40px; height: 40px;"
+                    [disabled]="quantity() <= 1"
+                    (click)="decreaseQuantity()">
+                    <i class="bi bi-dash"></i>
+                  </button>
+                  <span class="fw-bold fs-5">{{ quantity() }}</span>
+                  <button
+                    class="btn btn-outline-secondary rounded-circle d-flex align-items-center justify-content-center"
+                    style="width: 40px; height: 40px;"
+                    [disabled]="quantity() >= product()!.stock"
+                    (click)="increaseQuantity()">
+                    <i class="bi bi-plus"></i>
+                  </button>
+                </div>
+              </div>
+
               <button
-                class="add-to-cart-button"
+                class="btn btn-dark btn-lg w-100 mb-3"
                 [disabled]="product()!.stock === 0"
                 (click)="addToCart()">
-                <span class="cart-icon">🛒</span>
-                <span>{{ isInCart() ? 'Agregar Otra Unidad' : 'Agregar al Carrito' }}</span>
+                <i class="bi bi-cart-plus me-2"></i>
+                {{ isInCart() ? 'Agregar Otra Unidad' : 'Agregar al Carrito' }}
               </button>
+
+              @if (isInCart()) {
+                <div class="alert alert-success d-flex align-items-center gap-2 mb-4">
+                  <i class="bi bi-check-circle-fill"></i>
+                  <span>
+                    {{ getCartQuantity() }} {{ getCartQuantity() === 1 ? 'unidad' : 'unidades' }} en el carrito
+                  </span>
+                </div>
+              }
+
+              <div class="bg-light rounded p-3">
+                <div class="d-flex align-items-start gap-2 mb-2">
+                  <i class="bi bi-truck text-success mt-1"></i>
+                  <p class="mb-0 small">Envío gratuito en compras superiores a $50.000</p>
+                </div>
+                <div class="d-flex align-items-start gap-2 mb-2">
+                  <i class="bi bi-arrow-repeat text-success mt-1"></i>
+                  <p class="mb-0 small">Devoluciones sin cargo dentro de los 30 días</p>
+                </div>
+                <div class="d-flex align-items-start gap-2">
+                  <i class="bi bi-shield-check text-success mt-1"></i>
+                  <p class="mb-0 small">Garantía de autenticidad y calidad premium</p>
+                </div>
+              </div>
+
             </div>
-
-            @if (isInCart()) {
-              <div class="in-cart-badge">
-                ✓ {{ getCartQuantity() }} {{ getCartQuantity() === 1 ? 'unidad' : 'unidades' }} en el carrito
-              </div>
-            }
-
-            <div class="additional-info">
-              <div class="info-item">
-                <span class="bullet">•</span>
-                <p>Envío gratuito en compras superiores a $50.000</p>
-              </div>
-              <div class="info-item">
-                <span class="bullet">•</span>
-                <p>Devoluciones sin cargo dentro de los 30 días</p>
-              </div>
-              <div class="info-item">
-                <span class="bullet">•</span>
-                <p>Garantía de autenticidad y calidad premium</p>
-              </div>
-            </div>
-
           </div>
         </div>
 
@@ -121,9 +133,14 @@
   }
 
   @if (!product() && !spinner() && !error()) {
-    <div class="not-found-container">
-      <p class="not-found-message">Producto no encontrado</p>
-      <button class="back-button">Volver a productos</button>
+    <div class="container text-center py-5">
+      <div class="card border-0 shadow-sm p-5">
+        <i class="bi bi-search display-1 text-muted mb-4"></i>
+        <p class="fs-4 mb-4">Producto no encontrado</p>
+        <a routerLink="/products" class="btn btn-dark btn-lg">
+          <i class="bi bi-arrow-left me-2"></i> Volver a productos
+        </a>
+      </div>
     </div>
   }
 

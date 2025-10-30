@@ -1,57 +1,118 @@
-<div class="cart-container">
-  <h1>Mi Carrito</h1>
+<div class="container py-5">
+  <div class="row">
+    <div class="col-12">
+      <h1 class="mb-4 fw-bold">Mi Carrito</h1>
 
-  @if (cartService.items().length === 0) {
-    <div class="empty-cart">
-      <p>Tu carrito está vacío</p>
-      <a routerLink="/products" class="continue-shopping">Ir a comprar</a>
-    </div>
-  } @else {
-    <div class="cart-items">
-      @for (item of cartService.items(); track item.product.id) {
-        <div class="cart-item">
-          <img [src]="item.product.imageUrl || 'assets/no-image.png'" 
-               [alt]="item.product.name" 
-               class="item-image">
-          
-          <div class="item-details">
-            <h3>{{ item.product.name }}</h3>
-            <p class="item-price">${{ item.product.price | number:'1.2-2' }}</p>
+      @if (cartService.items().length === 0) {
+        <div class="card border-0 shadow-sm">
+          <div class="card-body text-center py-5">
+            <i class="bi bi-cart-x display-1 text-muted mb-4 d-block"></i>
+            <h3 class="mb-3">Tu carrito está vacío</h3>
+            <p class="text-muted mb-4">¡Descubrí nuestros productos destacados!</p>
+            <a routerLink="/" class="btn btn-dark btn-lg px-5">
+              <i class="bi bi-shop me-2"></i>
+              Ir a comprar
+            </a>
           </div>
-
-          <div class="item-quantity">
-            <button (click)="decreaseQuantity(item.product.id)" class="qty-btn">-</button>
-            <span>{{ item.quantity }}</span>
-            <button (click)="increaseQuantity(item.product.id)" 
-                    class="qty-btn"
-                    [disabled]="item.quantity >= item.product.stock">+</button>
+        </div>
+      } @else {
+        <div class="row g-4">
+          <div class="col-lg-8">
+            <div class="card border-0 shadow-sm">
+              <div class="card-body p-4">
+                @for (item of cartService.items(); track item.product.id) {
+                  <div class="cart-item-row d-flex align-items-center gap-3 pb-4 mb-4 border-bottom">
+                    <div class="flex-shrink-0">
+                      <img
+                        [src]="item.product.imagen || 'assets/no-image.png'"
+                        [alt]="item.product.nombre"
+                        class="rounded shadow-sm"
+                        style="width: 100px; height: 100px; object-fit: cover;">
+                    </div>
+                    <div class="flex-grow-1">
+                      <h5 class="mb-2 fw-semibold">{{ item.product.nombre }}</h5>
+                      <p class="text-success mb-0 fw-bold">
+                        {{ item.product.precio | currency:'ARS':'symbol':'1.0-0' }}
+                      </p>
+                    </div>
+                    <div class="d-flex align-items-center gap-2">
+                      <button
+                        (click)="decreaseQuantity(item.product.id)"
+                        class="btn btn-outline-secondary btn-sm rounded-circle"
+                        style="width: 36px; height: 36px; padding: 0;">
+                        <i class="bi bi-dash"></i>
+                      </button>
+                      <span class="fw-semibold mx-2" style="min-width: 30px; text-align: center;">
+                        {{ item.quantity }}
+                      </span>
+                      <button
+                        (click)="increaseQuantity(item.product.id)"
+                        class="btn btn-outline-secondary btn-sm rounded-circle"
+                        style="width: 36px; height: 36px; padding: 0;"
+                        [disabled]="item.quantity >= item.product.stock">
+                        <i class="bi bi-plus"></i>
+                      </button>
+                    </div>
+                    <div class="text-end" style="min-width: 120px;">
+                      <p class="mb-0 fw-bold fs-5 text-success">
+                        {{ (item.product.precio * item.quantity) | currency:'ARS':'symbol':'1.0-0' }}
+                      </p>
+                    </div>
+                    <button
+                      (click)="removeItem(item.product.id)"
+                      class="btn btn-link text-danger p-0 border-0"
+                      title="Eliminar producto">
+                      <i class="bi bi-trash fs-5"></i>
+                    </button>
+                  </div>
+                }
+                <div class="text-end">
+                  <button (click)="clearCart()" class="btn btn-outline-danger">
+                    <i class="bi bi-trash me-2"></i>
+                    Vaciar Carrito
+                  </button>
+                </div>
+              </div>
+            </div>
           </div>
+          <div class="col-lg-4">
+            <div class="card border-0 shadow-sm sticky-top" style="top: 90px;">
+              <div class="card-body p-4">
+                <h5 class="mb-4 fw-bold">Resumen del pedido</h5>
 
-          <div class="item-total">
-            ${{ (item.product.price * item.quantity) | number:'1.2-2' }}
+                <div class="d-flex justify-content-between mb-3 pb-3 border-bottom">
+                  <span class="text-muted">Productos ({{ cartService.totalItems() }})</span>
+                  <span class="fw-semibold">
+                    {{ cartService.totalPrice() | currency:'ARS':'symbol':'1.0-0' }}
+                  </span>
+                </div>
+
+                <div class="d-flex justify-content-between mb-3 pb-3 border-bottom">
+                  <span class="text-muted">Envío</span>
+                  <span class="text-success fw-semibold">Gratis</span>
+                </div>
+
+                <div class="d-flex justify-content-between mb-4">
+                  <span class="fs-5 fw-bold">Total</span>
+                  <span class="fs-4 fw-bold text-success">
+                    {{ cartService.totalPrice() | currency:'ARS':'symbol':'1.0-0' }}
+                  </span>
+                </div>
+
+                <button class="btn btn-dark w-100 btn-lg mb-3">
+                  <i class="bi bi-credit-card me-2"></i>
+                  Proceder al Pago
+                </button>
+
+                <a routerLink="/products" class="btn btn-outline-secondary w-100">
+                  <i class="bi bi-arrow-left me-2"></i>
+                  Seguir Comprando
+                </a>
+              </div>
+            </div>
           </div>
-
-          <button (click)="removeItem(item.product.id)" class="remove-btn">
-            🗑️
-          </button>
         </div>
       }
     </div>
-
-    <div class="cart-summary">
-      <div class="summary-row">
-        <span>Total de productos:</span>
-        <strong>{{ cartService.totalItems() }}</strong>
-      </div>
-      <div class="summary-row total">
-        <span>Total a pagar:</span>
-        <strong>${{ cartService.totalPrice() | number:'1.2-2' }}</strong>
-      </div>
-      
-      <div class="cart-actions">
-        <button (click)="clearCart()" class="clear-btn">Vaciar Carrito</button>
-        <button class="checkout-btn">Proceder al Pago</button>
-      </div>
-    </div>
-  }
+  </div>
 </div>

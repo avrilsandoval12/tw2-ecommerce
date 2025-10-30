@@ -1,6 +1,12 @@
-<div class="product-card">
+<div class="product-card" (click)="navigateToDetail()" >
   <div class="image-container">
     <img [src]="producto.imagen" [alt]="producto.nombre" loading="lazy" />
+
+      @if (!hasStock()) {
+          <div class="stock-overlay">
+            <span class="out-of-stock-label">Sin Stock</span>
+          </div>
+        }
   </div>
 
   <div class="info">
@@ -10,8 +16,17 @@
       {{ producto.precio | currency:'ARS':'symbol':'1.0-0' }}
     </p>
 
-    <button class="btn-agregar">
-      Agregar al carrito
+      <button
+      class="btn-agregar"
+      [disabled]="!hasStock()"
+      (click)="addToCart()">
+      <span class="cart-icon">🛒</span>
+      <span>{{ isInCart() ? 'Agregar Otra' : 'Agregar al carrito' }}</span>
     </button>
+     @if (isInCart()) {
+      <div class="in-cart-badge">
+        ✓ {{ getCartQuantity() }} {{ getCartQuantity() === 1 ? 'unidad' : 'unidades' }} en el carrito
+      </div>
+    }
   </div>
 </div>

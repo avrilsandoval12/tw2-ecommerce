@@ -20,9 +20,9 @@ export class ProductService {
 
   cargarProductosMock() {
     const mock: Product[] = [
-      { id: 1, nombre: 'ToteBag', precio: 32000, imagen: '/public/productos/1.jpg' },
-      { id: 2, nombre: 'Bolso', precio: 41000, imagen: '/public/productos/2.jpg' },
-      { id: 3, nombre: 'Billetera', precio: 15000, imagen: '/public/productos/3.jpg' },
+      { id: 1, nombre: 'ToteBag', precio: 32000, imagen: '/public/productos/1.jpg', stock: 10 },
+      { id: 2, nombre: 'Bolso', precio: 41000, imagen: '/public/productos/2.jpg', stock: 5 },
+      { id: 3, nombre: 'Billetera', precio: 15000, imagen: '/public/productos/3.jpg', stock: 2 },
     ];
     this._productos.set(mock);
   }

@@ -1,5 +1,5 @@
-import { Injectable, signal, computed } from '@angular/core';
-import { Product } from '../../interfaces/product.interface';
+import { Injectable, signal, computed, model } from '@angular/core';
+import { Product } from '../../../core/models/product.model';
 import { CartItem } from '../../interfaces/cartitem.interface';
 
 @Injectable({
@@ -7,20 +7,20 @@ import { CartItem } from '../../interfaces/cartitem.interface';
 })
 export class CartService {
   private readonly STORAGE_KEY = 'shopping_cart';
-  
+
 
   private cartItems = signal<CartItem[]>(this.loadCartFromStorage());
 
 
   items = computed(() => this.cartItems());
-  
-  totalItems = computed(() => 
+
+  totalItems = computed(() =>
     this.cartItems().reduce((total, item) => total + item.quantity, 0)
   );
-  
-  totalPrice = computed(() => 
-    this.cartItems().reduce((total, item) => 
-      total + (item.product.price * item.quantity), 0
+
+  totalPrice = computed(() =>
+    this.cartItems().reduce((total, item) =>
+      total + (item.product.precio * item.quantity), 0
     )
   );
 
@@ -92,7 +92,7 @@ export class CartService {
 
     if (itemIndex > -1) {
       const product = currentItems[itemIndex].product;
-      
+
       if (quantity <= product.stock) {
         currentItems[itemIndex].quantity = quantity;
         this.cartItems.set(currentItems);

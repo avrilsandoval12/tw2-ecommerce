@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
-import { Products } from '../../api/services/products/products';
-import { Product } from '../../api/interfaces/product.interface';
+import { Products } from '../../api/services/products/products-service';
+import { Product } from '../../core/models/product.model';
 
 @Component({
   selector: 'app-product-form',
@@ -23,12 +23,12 @@ export class ProductFormComponent implements OnInit {
     private productService: Products
   ) {
     this.productForm = this.fb.group({
-      name: ['', [Validators.required, Validators.maxLength(100)]],
-      description: ['', [Validators.required, Validators.maxLength(500)]],
-      price: [0, [Validators.required, Validators.min(0)]],
+      nombre: ['', [Validators.required, Validators.maxLength(100)]],
+      descripcion: ['', [Validators.required, Validators.maxLength(500)]],
+      precio: [0, [Validators.required, Validators.min(0)]],
       stock: [0, [Validators.required, Validators.min(0)]],
-      classification: ['', Validators.required],
-      imageUrl: ['', Validators.required]
+      categoria: ['', Validators.required],
+      imagen: ['', Validators.required]
     });
   }
 
@@ -92,12 +92,12 @@ export class ProductFormComponent implements OnInit {
     this.modoEdicion = true;
     this.productoEditandoId = producto.id;
     this.productForm.patchValue({
-      name: producto.name,
-      description: producto.description,
-      price: producto.price,
+      nombre: producto.nombre,
+      descripcion: producto.descripcion,
+      precio: producto.precio,
       stock: producto.stock,
-      classification: producto.classification,
-      imageUrl: producto.imageUrl
+      categoria: producto.categoria,
+      imagen: producto.imagen
     });
   }
 
@@ -117,38 +117,38 @@ export class ProductFormComponent implements OnInit {
 
   resetForm(): void {
     this.productForm.reset({
-      name: '',
-      description: '',
-      price: 0,
+      nombre: '',
+      descripcion: '',
+      precio: 0,
       stock: 0,
-      classification: '',
-      imageUrl: ''
+      categoria: '',
+      imagen: ''
     });
     this.modoEdicion = false;
     this.productoEditandoId = undefined;
   }
 
-  get name() {
-    return this.productForm.get('name');
+  get nombre() {
+    return this.productForm.get('nombre');
   }
 
-  get description() {
-    return this.productForm.get('description');
+  get descripcion() {
+    return this.productForm.get('descripcion');
   }
 
-  get price() {
-    return this.productForm.get('price');
+  get precio() {
+    return this.productForm.get('precio');
   }
 
   get stock() {
     return this.productForm.get('stock');
   }
 
-  get classification() {
-    return this.productForm.get('classification');
+  get categoria() {
+    return this.productForm.get('categoria');
   }
 
-  get imageUrl() {
-    return this.productForm.get('imageUrl');
+  get imagen() {
+    return this.productForm.get('imagen');
   }
 }

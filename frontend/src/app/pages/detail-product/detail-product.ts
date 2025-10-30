@@ -1,9 +1,9 @@
 import { Component, OnInit, signal } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { Products } from '../../api/services/products/products';
-import { Product } from '../../api/interfaces/product.interface';
+import { Products } from '../../api/services/products/products-service';
+import { Product } from '../../core/models/product.model';
 import { CommonModule } from '@angular/common';
-import { CartService } from '../../api/services/cart/cart';
+import { CartService } from '../../api/services/cart/cart-service';
 
 @Component({
   selector: 'app-detail-product',
@@ -52,9 +52,18 @@ export class DetailProduct implements OnInit {
     this.error.set(null);
 
     this.productsService.getProductById(id).subscribe({
-      next: (data: Product) => {
-        this.product.set(data);
-      },
+     next: (data: any) => {
+  const mappedProduct: Product = {
+    id: data.id,
+    nombre: data.name,
+    descripcion: data.description,
+    precio: data.price,
+    imagen: data.imageUrl,
+    categoria: data.classification,
+    stock: data.stock
+  };
+  this.product.set(mappedProduct);
+},
       error: (err: any) => {
         console.error('Error al obtener el producto:', err);
         this.error.set('No se pudo cargar el detalle del producto.');
