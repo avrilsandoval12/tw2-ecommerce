@@ -1,0 +1,43 @@
+<div class="container py-5">
+  <div class="row align-items-center mb-4">
+    <div class="col">
+      <h1 class="fw-bold mb-1">Crear Producto</h1>
+      <p class="text-muted mb-0">Completa los campos para agregar un nuevo producto</p>
+    </div>
+    <div class="col-auto">
+      <a routerLink="/products/list-products" class="btn btn-outline-secondary">
+        <i class="bi bi-arrow-left me-2"></i> Volver
+      </a>
+    </div>
+  </div>
+
+  @if(success) {
+    <div class="alert alert-success alert-dismissible fade show shadow-sm border-0" role="alert">
+      <div class="d-flex align-items-center">
+        <i class="bi bi-check-circle-fill fs-4 me-3"></i>
+        <div>{{ success }}</div>
+      </div>
+      <button type="button" class="btn-close" (click)="success = null"></button>
+    </div>
+  }
+
+  @if(error) {
+    <div class="alert alert-danger alert-dismissible fade show shadow-sm border-0" role="alert">
+      <div class="d-flex align-items-center">
+        <i class="bi bi-exclamation-triangle-fill fs-4 me-3"></i>
+        <div>{{ error }}</div>
+      </div>
+      <button type="button" class="btn-close" (click)="error = null"></button>
+    </div>
+  }
+
+  <div class="row justify-content-center">
+    <div class="col-lg-10 col-xl-8">
+      <div class="card shadow-sm border-0">
+        <div class="card-body p-4 p-md-5">
+          <app-form-product (eventEmitterFormProduct)="crearProducto($event)"></app-form-product>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,119 @@
+<form [formGroup]="form" (ngSubmit)="sendProduct()" autocomplete="off">
+
+  <div class="mb-3">
+    <label for="nombre" class="form-label fw-semibold">Nombre</label>
+    <input
+      id="nombre"
+      type="text"
+      formControlName="nombre"
+      class="form-control"
+      [class.is-invalid]="nombre && nombre.invalid && nombre.touched"
+      placeholder="Nombre del producto"
+    >
+    @if (nombre && nombre.hasError('required') && nombre.touched) {
+      <span class="text-danger small">Este campo es obligatorio</span>
+    }
+    @if (nombre && nombre.hasError('maxlength') && nombre.touched) {
+      <span class="text-danger small">El nombre no puede exceder los 100 caracteres</span>
+    }
+  </div>
+
+  <div class="mb-3">
+    <label for="descripcion" class="form-label fw-semibold">Descripción</label>
+    <textarea
+      id="descripcion"
+      formControlName="descripcion"
+      rows="3"
+      class="form-control"
+      [class.is-invalid]="descripcion && descripcion.invalid && descripcion.touched"
+      placeholder="Descripción detallada del producto"
+    ></textarea>
+    @if (descripcion && descripcion.hasError('required') && descripcion.touched) {
+      <span class="text-danger small">Este campo es obligatorio</span>
+    }
+    @if (descripcion && descripcion.hasError('maxlength') && descripcion.touched) {
+      <span class="text-danger small">La descripción no puede exceder los 500 caracteres</span>
+    }
+  </div>
+
+  <div class="row">
+    <div class="col-md-6 mb-3">
+      <label for="precio" class="form-label fw-semibold">Precio ($)</label>
+      <input
+        id="precio"
+        type="number"
+        formControlName="precio"
+        class="form-control"
+        [class.is-invalid]="precio && precio.invalid && precio.touched"
+        placeholder="0.00"
+        step="0.01"
+      >
+      @if (precio && precio.hasError('required') && precio.touched) {
+        <span class="text-danger small">Este campo es obligatorio</span>
+      }
+      @if (precio && precio.hasError('min') && precio.touched) {
+        <span class="text-danger small">El precio debe ser mayor o igual a 0</span>
+      }
+    </div>
+
+    <div class="col-md-6 mb-3">
+      <label for="stock" class="form-label fw-semibold">Stock</label>
+      <input
+        id="stock"
+        type="number"
+        formControlName="stock"
+        class="form-control"
+        [class.is-invalid]="stock && stock.invalid && stock.touched"
+        placeholder="0"
+      >
+      @if (stock && stock.hasError('required') && stock.touched) {
+        <span class="text-danger small">Este campo es obligatorio</span>
+      }
+      @if (stock && stock.hasError('min') && stock.touched) {
+        <span class="text-danger small">El stock debe ser mayor o igual a 0</span>
+      }
+    </div>
+  </div>
+
+  <div class="mb-3">
+    <label for="categoria" class="form-label fw-semibold">Categoría</label>
+    <input
+      id="categoria"
+      type="text"
+      formControlName="categoria"
+      class="form-control"
+      [class.is-invalid]="categoria && categoria.invalid && categoria.touched"
+      placeholder="Categoría del producto"
+    >
+    @if (categoria && categoria.hasError('required') && categoria.touched) {
+      <span class="text-danger small">Este campo es obligatorio</span>
+    }
+  </div>
+
+  <div class="mb-4">
+    <label for="imagen" class="form-label fw-semibold">URL de la Imagen</label>
+    <input
+      id="imagen"
+      type="url"
+      formControlName="imagen"
+      class="form-control"
+      [class.is-invalid]="imagen && imagen.invalid && imagen.touched"
+      placeholder="https://ejemplo.com/imagen.jpg"
+    >
+    @if (imagen && imagen.hasError('required') && imagen.touched) {
+      <span class="text-danger small">Este campo es obligatorio</span>
+    }
+  </div>
+
+  <div class="row mt-3 text-center">
+    <div class="col">
+      <button
+        type="submit"
+        [disabled]="form.invalid"
+        class="btn btn-success rounded-pill px-5"
+      >
+        {{ title }}
+      </button>
+    </div>
+  </div>
+</form>

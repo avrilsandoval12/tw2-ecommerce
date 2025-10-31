@@ -1,4 +1,4 @@
-import { Component, OnInit, signal } from '@angular/core';
+import { Component, inject, OnInit, signal } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Products } from '../../api/services/products/products-service';
 import { Product } from '../../core/models/product.model';
@@ -12,111 +12,77 @@ import { CartService } from '../../api/services/cart/cart-service';
   styleUrl: './detail-product.css',
   standalone: true
 })
-export class DetailProduct implements OnInit {
+export class DetailProduct implements OnInit{
 
-  product = signal<Product | undefined>(undefined);
-  spinner = signal<boolean>(true);
-  error = signal<string | null>(null);
-  addingToCart = signal<boolean>(false);
-  quantity = signal<number>(1);
+ spinner = true;
+ error: string | null = null;
+ product!: Product;
+ quantity = 1;
+ id: number = 0;
 
-  constructor(
-    private route: ActivatedRoute,
-    private productsService: Products,
-    public cartService: CartService
-  ) {}
+ productsService = inject(Products);
+ cartService = inject(CartService);
+ activatedRoute = inject(ActivatedRoute);
 
   ngOnInit(): void {
-    this.route.paramMap.subscribe({
-      next: (params) => {
-        const productIdString = params.get('id');
-
-        if (productIdString) {
-          const productId = +productIdString;
-          this.loadProduct(productId);
-        } else {
-          this.error.set('No se proporcionó un ID de producto.');
-          this.spinner.set(false);
-        }
-      },
-      error: (err: any) => {
-        console.error('Error al obtener parámetros de la ruta:', err);
-        this.error.set('Error al cargar la página.');
-        this.spinner.set(false);
-      }
-    });
+      this.id = Number(this.activatedRoute.snapshot.paramMap.get('id'));
+      this.verProducto();
   }
 
-  loadProduct(id: number): void {
-    this.spinner.set(true);
-    this.error.set(null);
+   ngOnDestroy(): void {}
 
-    this.productsService.getProductById(id).subscribe({
-     next: (data: any) => {
-  const mappedProduct: Product = {
-    id: data.id,
-    nombre: data.name,
-    descripcion: data.description,
-    precio: data.price,
-    imagen: data.imageUrl,
-    categoria: data.classification,
-    stock: data.stock
-  };
-  this.product.set(mappedProduct);
-},
-      error: (err: any) => {
-        console.error('Error al obtener el producto:', err);
-        this.error.set('No se pudo cargar el detalle del producto.');
+    verProducto(): void {
+    this.productsService.getProductById(this.id).subscribe({
+      next: (data: any) => {
+        const mappedProduct: Product = {
+          id: data.id,
+          nombre: data.name,
+          descripcion: data.description,
+          precio: data.price,
+          imagen: data.imageUrl,
+          categoria: data.classification,
+          stock: data.stock
+        };
+        this.product = mappedProduct;
+      },
+      error: (error) => {
+        this.error = 'No se pudo cargar el detalle del producto.';
+        console.error('Error al obtener el producto:', error);
       },
       complete: () => {
-        this.spinner.set(false);
+        this.spinner = false;
       }
     });
   }
-
-
-
 
 
   // carrito:
-
-
-  increaseQuantity(): void {
-    const currentProduct = this.product();
-    if (!currentProduct) return;
-
-    const newQuantity = this.quantity() + 1;
-    if (newQuantity <= currentProduct.stock) {
-      this.quantity.set(newQuantity);
+   increaseQuantity(): void {
+    if (this.product && this.quantity < this.product.stock) {
+      this.quantity++;
     }
   }
 
   decreaseQuantity(): void {
-    const newQuantity = this.quantity() - 1;
-    if (newQuantity >= 1) {
-      this.quantity.set(newQuantity);
+    if (this.quantity > 1) {
+      this.quantity--;
     }
   }
 
   addToCart(): void {
-    const currentProduct = this.product();
-    if (!currentProduct) return;
-
-    this.cartService.addToCart(currentProduct, this.quantity());
-    this.quantity.set(1);
+    if (this.product) {
+      this.cartService.addToCart(this.product, this.quantity);
+      this.quantity = 1;
+    }
   }
 
   isInCart(): boolean {
-    const currentProduct = this.product();
-    return currentProduct ? this.cartService.isInCart(currentProduct.id) : false;
+    return this.product ? this.cartService.isInCart(this.product.id) : false;
   }
 
-   getCartQuantity(): number {
-    const currentProduct = this.product();
-    return currentProduct ? this.cartService.getProductQuantity(currentProduct.id) : 0;
+  getCartQuantity(): number {
+    return this.product ? this.cartService.getProductQuantity(this.product.id) : 0;
   }
-
-
 
 
 }
