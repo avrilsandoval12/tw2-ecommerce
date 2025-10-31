@@ -20,4 +20,14 @@ router.post('/register',
     AuthController.createAccount
 );
 
+router.post('/login',
+     body("email")
+        .notEmpty().withMessage("Email es obligatorio").bail()
+        .isEmail().withMessage("Email no valido"),
+    body("password")
+        .notEmpty().withMessage("Password es obligatorio"),
+    handleInputError,
+    AuthController.login
+);
+
 export default router;
