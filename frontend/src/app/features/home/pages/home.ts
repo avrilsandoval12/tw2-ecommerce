@@ -1,8 +1,8 @@
 import { Component, OnInit, computed, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ProductService } from '../../core/services/product.service';
+import { ProductService } from '../../../core/services/product.service';
 import { CarouselModule } from 'ngx-bootstrap/carousel';
-import { ProductCard } from '../../shared/product-card/product-card';
+import { ProductCard } from '../../../shared/components/product-card/product-card';
 
 @Component({
   selector: 'app-home',

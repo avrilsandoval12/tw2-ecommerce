@@ -1,0 +1,69 @@
+<div class="container">
+  <div class="row justify-content-center align-items-center min-vh-100">
+    <div class="col-12 col-md-6 col-lg-4">
+      <div class="card shadow">
+        <div class="card-body p-4">
+          <h2 class="card-title text-center mb-4">Iniciar Sesión</h2>
+
+          <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+            <div class="mb-3">
+              <label for="email" class="form-label">Email</label>
+              <input type="email" id="email" formControlName="email" class="form-control"
+                [class.is-invalid]="email.invalid && email.touched" placeholder="ejemplo@email.com" />
+              @if (email.invalid && email.touched) {
+              <div class="invalid-feedback">
+                @if (email.errors?.['required']) {
+                El email es obligatorio
+                }
+                @if (email.errors?.['email']) {
+                Email no válido
+                }
+              </div>
+              }
+            </div>
+
+            <div class="mb-3">
+              <label for="password" class="form-label">Contraseña</label>
+              <input type="password" id="password" formControlName="password" class="form-control"
+                [class.is-invalid]="password.invalid && password.touched" placeholder="Mínimo 8 caracteres" />
+              @if (password.invalid && password.touched) {
+              <div class="invalid-feedback">
+                @if (password.errors?.['required']) {
+                La contraseña es obligatoria
+                }
+                @if (password.errors?.['minlength']) {
+                Mínimo 8 caracteres
+                }
+              </div>
+              }
+            </div>
+
+            @if (errorMessage()) {
+            <div class="alert alert-danger" role="alert">
+              {{ errorMessage() }}
+            </div>
+            }
+
+            <div class="d-grid">
+              <button type="submit" [disabled]="isLoading()" class="btn btn-primary">
+                @if (isLoading()) {
+                <span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+                Cargando...
+                } @else {
+                Iniciar Sesión
+                }
+              </button>
+            </div>
+          </form>
+
+          <div class="text-center mt-3">
+            <small class="text-muted">
+              ¿No tienes cuenta?
+              <a routerLink="/register" class="text-decoration-none">Regístrate aquí</a>
+            </small>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
