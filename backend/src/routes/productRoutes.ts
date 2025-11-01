@@ -2,6 +2,7 @@ import { Router } from 'express';
 import { ProductController } from '../controllers/ProductController';
 import { param } from 'express-validator';
 import { handleInputError } from '../middlewares/validation';
+import { upload } from '../middlewares/upload';
 
 const router = Router();
 
@@ -16,10 +17,9 @@ router.get('/:id',
 
 
 
-router.post('/', ProductController.createProduct);
-router.put('/:id', ProductController.updateProduct);
+router.post('/', upload.single('imagen'), ProductController.createProduct);
+router.put('/:id', upload.single('imagen'), ProductController.updateProduct);
 router.delete('/:id', ProductController.deleteProduct);
-
 
 
 export default router;

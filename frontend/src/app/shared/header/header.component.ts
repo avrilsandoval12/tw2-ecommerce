@@ -10,22 +10,19 @@ import { CartService } from '../../api/services/cart/cart-service';
   templateUrl: './header.component.html',
   styleUrls: ['./header.component.css']
 })
+
 export class HeaderComponent {
 
   isCartOpen = signal(false);
 
   constructor(public cartService: CartService) {}
+
   toggleCart(): void {
    this.isCartOpen.update(value => !value);
-
     }
 
     closeCart(): void {
       this.isCartOpen.set(false);
     }
 
-    removeItem(productId: number): void {
-      this.cartService.removeFromCart(productId);
-
-    }
 }

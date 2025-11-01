@@ -57,31 +57,10 @@ export class DetailProduct implements OnInit{
 
 
   // carrito:
-   increaseQuantity(): void {
-    if (this.product && this.quantity < this.product.stock) {
-      this.quantity++;
+ addToCart(): void {
+    if (this.product && this.product.stock > 0) {
+      this.cartService.addToCart(this.product, 1);
     }
-  }
-
-  decreaseQuantity(): void {
-    if (this.quantity > 1) {
-      this.quantity--;
-    }
-  }
-
-  addToCart(): void {
-    if (this.product) {
-      this.cartService.addToCart(this.product, this.quantity);
-      this.quantity = 1;
-    }
-  }
-
-  isInCart(): boolean {
-    return this.product ? this.cartService.isInCart(this.product.id) : false;
-  }
-
-  getCartQuantity(): number {
-    return this.product ? this.cartService.getProductQuantity(this.product.id) : 0;
   }
 
 

@@ -116,4 +116,16 @@ export class CartService {
     const item = this.cartItems().find(item => item.product.id === productId);
     return item ? item.quantity : 0;
   }
+
+ incrementQuantity(productId: number): void {
+    const currentQuantity = this.getProductQuantity(productId);
+    this.updateQuantity(productId, currentQuantity + 1);
+  }
+
+  decrementQuantity(productId: number): void {
+    const currentQuantity = this.getProductQuantity(productId);
+    this.updateQuantity(productId, currentQuantity - 1);
+  }
+
+
 }

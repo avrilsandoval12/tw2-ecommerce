@@ -1,7 +1,8 @@
 import express from "express";
 import authRoutes from './routes/authRoutes';
 import productRoutes from './routes/productRoutes';
-import cors from 'cors';
+import cors from 'cors';;
+import path from 'path';
 
 const app = express();
 
@@ -15,7 +16,7 @@ const corsOptions = {
 };
 
 app.use(cors(corsOptions));
-
+app.use('/uploads', express.static(path.join(process.cwd(), 'uploads')));
 app.use(express.json());
 
 app.use('/api/auth', authRoutes);

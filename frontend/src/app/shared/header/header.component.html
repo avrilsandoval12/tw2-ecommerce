@@ -112,10 +112,28 @@
                         ${{ (item.product.precio * item.quantity) | number:'1.2-2' }}
                       </p>
                     </div>
+                        <div class="d-flex align-items-center gap-2 mt-2">
+                                  <button
+                                    class="btn btn-sm btn-outline-secondary"
+                                    (click)="cartService.decrementQuantity(item.product.id)"
+                                    [disabled]="item.quantity <= 1"
+                                    title="Disminuir cantidad">
+                                    <i class="bi bi-dash"></i>
+                                  </button>
 
+                                  <span class="fw-semibold px-2">{{ item.quantity }}</span>
+
+                                  <button
+                                    class="btn btn-sm btn-outline-secondary"
+                                    (click)="cartService.incrementQuantity(item.product.id)"
+                                    [disabled]="item.quantity >= item.product.stock"
+                                    title="Aumentar cantidad">
+                                    <i class="bi bi-plus"></i>
+                                  </button>
+                                </div>
                     <button
                       class="btn btn-link text-danger p-0 border-0 align-self-start"
-                      (click)="removeItem(item.product.id)"
+                      (click)="cartService.removeFromCart(item.product.id)"
                       title="Eliminar">
                       <i class="bi bi-trash"></i>
                     </button>

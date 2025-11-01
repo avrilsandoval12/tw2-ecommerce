@@ -1,4 +1,4 @@
-<div class="bg-light py-5">
+<div class="bg-light min-vh-100 py-4">
 
   @if (spinner) {
     <div class="container text-center py-5">
@@ -22,19 +22,17 @@
   }
 
   @if (product && !spinner && !error) {
-    <div class="container-fluid px-5">
-      <div class="row g-5 justify-content-center align-items-start">
-
-        <div class="col-lg-5 col-md-6">
-          <div class="bg-white rounded shadow-sm p-2">
+    <div class="container">
+      <div class="row g-4 g-lg-5">
+        <div class="col-lg-6">
+          <div class="position-sticky" style="top: 2rem;">
             @if (product.imagen) {
               <img
                 [src]="product.imagen"
                 [alt]="product.nombre"
-                class="img-fluid rounded w-100"
-                style="max-height: 480px; object-fit: cover;">
+                class="product-image img-fluid rounded shadow-sm w-100">
             } @else {
-              <div class="d-flex justify-content-center align-items-center bg-white rounded shadow-sm" style="height: 480px;">
+              <div class="no-image-placeholder bg-white rounded shadow-sm d-flex align-items-center justify-content-center">
                 <div class="text-center text-muted">
                   <i class="bi bi-image display-1 mb-3"></i>
                   <p class="mb-0">Sin imagen disponible</p>
@@ -43,88 +41,98 @@
             }
           </div>
         </div>
-
-        <div class="col-lg-7 col-md-6">
-          <div class="card border-0 shadow-sm">
-            <div class="card-body p-5">
-
-              <span class="badge bg-dark text-white mb-3 px-3 py-2">
+        <div class="col-lg-6">
+          <div class="d-flex flex-column gap-4">
+                        <div>
+              <span class="badge bg-light text-dark border px-3 py-2 text-uppercase fw-normal" style="font-size: 0.75rem; letter-spacing: 0.5px;">
                 {{ product.categoria }}
               </span>
-
-              <h2 class="fw-bold mb-3">{{ product.nombre }}</h2>
-
-              <p class="fs-3 fw-bold text-success mb-4">
+            </div>
+            <h1 class="display-5 fw-bold mb-0">{{ product.nombre }}</h1>
+            <p class="text-muted fs-6 lh-lg mb-0">{{ product.descripcion }}</p>
+            <div>
+              <div class="fs-2 fw-semibold text-dark mb-1">
                 {{ product.precio | currency:'ARS':'symbol':'1.0-0' }}
-              </p>
-
-              <div class="alert alert-light border d-flex align-items-center gap-2 mb-4">
-                <i class="bi bi-box-seam fs-5"></i>
-                @if (product.stock > 0) {
-                  <span>
-                    <strong>{{ product.stock - getCartQuantity() }}</strong> unidades disponibles
-                  </span>
-                } @else {
-                  <span class="text-danger fw-semibold">Sin stock</span>
-                }
               </div>
+              <small class="text-muted">Precio por unidad</small>
+            </div>
+            <div class="alert alert-light border mb-0">
+              <i class="bi bi-box-seam me-2"></i>
+              @if (product.stock > 0) {
+                <span>
+                  <strong>{{ product.stock }}</strong> unidades disponibles
+                </span>
+              } @else {
+                <span class="text-danger fw-semibold">Sin stock</span>
+              }
+            </div>
 
-              <p class="text-muted mb-4">{{ product.descripcion }}</p>
-
-              <div class="d-flex align-items-center justify-content-between mb-4">
-                <h6 class="fw-bold mb-0">Cantidad</h6>
-                <div class="d-flex align-items-center gap-3">
-                  <button
-                    class="btn btn-outline-secondary rounded-circle d-flex align-items-center justify-content-center"
-                    style="width: 40px; height: 40px;"
-                    [disabled]="quantity <= 1"
-                    (click)="decreaseQuantity()">
-                    <i class="bi bi-dash"></i>
-                  </button>
-                  <span class="fw-bold fs-5">{{ quantity }}</span>
-                  <button
-                    class="btn btn-outline-secondary rounded-circle d-flex align-items-center justify-content-center"
-                    style="width: 40px; height: 40px;"
-                    [disabled]="quantity >= product.stock"
-                    (click)="increaseQuantity()">
-                    <i class="bi bi-plus"></i>
-                  </button>
-                </div>
-              </div>
-
+            <hr class="my-0">
+            @if (!cartService.isInCart(product.id)) {
               <button
-                class="btn btn-dark btn-lg w-100 mb-3"
+                class="btn btn-dark btn-lg w-100 py-3"
                 [disabled]="product.stock === 0"
                 (click)="addToCart()">
-                <i class="bi bi-cart-plus me-2"></i>
-                {{ isInCart() ? 'Agregar Otra Unidad' : 'Agregar al Carrito' }}
+                Agregar
               </button>
+            } @else {
+              <div class="d-flex gap-2">
+                <div class="quantity-controls d-flex align-items-center border rounded flex-grow-1 bg-white">
+                  <button
+                    class="btn-link flex-shrink-0"
+                    (click)="cartService.decrementQuantity(product.id)"
+                    [disabled]="cartService.getProductQuantity(product.id) <= 1">
+                    −
+                  </button>
 
-              @if (isInCart()) {
-                <div class="alert alert-success d-flex align-items-center gap-2 mb-4">
-                  <i class="bi bi-check-circle-fill"></i>
-                  <span>
-                    {{ getCartQuantity() }} {{ getCartQuantity() === 1 ? 'unidad' : 'unidades' }} en el carrito
+                  <span class="flex-grow-1 text-center fw-semibold fs-5">
+                    {{ cartService.getProductQuantity(product.id) }}
                   </span>
-                </div>
-              }
 
-              <div class="bg-light rounded p-3">
-                <div class="d-flex align-items-start gap-2 mb-2">
-                  <i class="bi bi-truck text-success mt-1"></i>
-                  <p class="mb-0 small">Envío gratuito en compras superiores a $50.000</p>
+                  <button
+                    class="btn-link flex-shrink-0"
+                    (click)="cartService.incrementQuantity(product.id)"
+                    [disabled]="cartService.getProductQuantity(product.id) >= product.stock">
+                    +
+                  </button>
                 </div>
-                <div class="d-flex align-items-start gap-2 mb-2">
-                  <i class="bi bi-arrow-repeat text-success mt-1"></i>
-                  <p class="mb-0 small">Devoluciones sin cargo dentro de los 30 días</p>
-                </div>
-                <div class="d-flex align-items-start gap-2">
-                  <i class="bi bi-shield-check text-success mt-1"></i>
-                  <p class="mb-0 small">Garantía de autenticidad y calidad premium</p>
-                </div>
+
+                <button class="btn btn-dark px-4" disabled style="min-width: 130px;">
+                  <i class="bi bi-check-lg me-1"></i>
+                  Agregado
+                </button>
               </div>
+              <div class="d-flex align-items-center justify-content-between p-3 bg-light rounded">
+                <small class="text-muted">
+                  <i class="bi bi-cart-check me-1"></i>
+                  {{ cartService.getProductQuantity(product.id) }}
+                  {{ cartService.getProductQuantity(product.id) === 1 ? 'unidad' : 'unidades' }} en el carrito
+                </small>
+                <button
+                  class="btn btn-link text-danger p-0 text-decoration-none"
+                  (click)="cartService.removeFromCart(product.id)"
+                  title="Eliminar del carrito">
+                  <i class="bi bi-trash"></i>
+                </button>
+              </div>
+            }
 
+            <hr class="my-0">
+            <div class="d-flex flex-column gap-3">
+              <div class="d-flex align-items-start gap-3">
+                <i class="bi bi-truck text-success fs-5"></i>
+                <small class="text-muted lh-base">Envío gratuito en compras superiores a $50.000</small>
+              </div>
+              <div class="d-flex align-items-start gap-3">
+                <i class="bi bi-arrow-repeat text-success fs-5"></i>
+                <small class="text-muted lh-base">Devoluciones sin cargo dentro de los 30 días</small>
+              </div>
+              <div class="d-flex align-items-start gap-3">
+                <i class="bi bi-shield-check text-success fs-5"></i>
+                <small class="text-muted lh-base">Garantía de autenticidad y calidad premium</small>
+              </div>
             </div>
+
           </div>
         </div>
 

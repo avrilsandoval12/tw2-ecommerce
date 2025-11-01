@@ -13,14 +13,16 @@ import { Product } from '../../models/product.model';
 export class FormProductComponent implements OnInit, OnDestroy {
 
   title: string = "Crear Producto";
+ imagePreview: string | null = null;
+  selectedFile: File | null = null;
 
   fb = inject(FormBuilder);
 
   form!: FormGroup;
 
-  product = input<Product>(); // Input desde el padre
+  product = input<Product>();
 
-  eventEmitterFormProduct = output<Product>(); // Output al padre
+  eventEmitterFormProduct = output<Product>();
 
   ngOnInit(): void {
     if (this.product()) {
@@ -36,8 +38,50 @@ export class FormProductComponent implements OnInit, OnDestroy {
       imagen: [this.product()?.imagen || '', []]
     });
   }
-
   ngOnDestroy(): void {}
+
+onFileSelected(event: Event): void {
+  const input = event.target as HTMLInputElement;
+
+  if (input.files && input.files[0]) {
+    const file = input.files[0];
+
+    if (!file.type.startsWith('image/')) {
+      alert('Por favor selecciona solo archivos de imagen');
+      input.value = '';
+      return;
+    }
+    if (file.size > 5 * 1024 * 1024) {
+      alert('La imagen no debe superar los 5MB');
+      input.value = '';
+      return;
+    }
+    this.selectedFile = file;
+    const reader = new FileReader();
+    reader.onload = (e: ProgressEvent<FileReader>) => {
+      const base64String = e.target?.result as string;
+      this.imagePreview = base64String;
+    };
+
+    reader.onerror = () => {
+      alert('Error al cargar la imagen');
+      input.value = '';
+    };
+
+    reader.readAsDataURL(file);
+  }
+}
+
+  removeImage(): void {
+    this.imagePreview = null;
+    this.selectedFile = null;
+    this.form.patchValue({ imagen: '' });
+    const fileInput = document.getElementById('fileInput') as HTMLInputElement;
+    if (fileInput) {
+      fileInput.value = '';
+    }
+  }
+
 
   sendProduct(): void {
     if (this.form.valid) {
@@ -48,12 +92,14 @@ export class FormProductComponent implements OnInit, OnDestroy {
         precio: this.form.get('precio')?.value,
         stock: this.form.get('stock')?.value,
         categoria: this.form.get('categoria')?.value.trim(),
-        imagen: this.form.get('imagen')?.value.trim()
+        imagen: '',
+        imagenFile: this.selectedFile || undefined
       };
 
       this.eventEmitterFormProduct.emit(producto);
     }
   }
+
 
   get nombre() {
     return this.form.get('nombre');

@@ -6,4 +6,5 @@ export interface Product {
   imagen: string;
   categoria?: string;
   stock: number;
+  imagenFile?: File;
 }

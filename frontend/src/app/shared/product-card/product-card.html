@@ -9,23 +9,41 @@
         }
   </div>
 
-  <div class="info">
+    <div class="info">
     <h3 class="nombre">{{ producto.nombre }}</h3>
 
     <p class="precio">
       {{ producto.precio | currency:'ARS':'symbol':'1.0-0' }}
     </p>
 
+    @if (!cartService.isInCart(producto.id)) {
       <button
-      class="btn-agregar"
-      [disabled]="!hasStock()"
-      (click)="addToCart()">
-      <span class="cart-icon">🛒</span>
-      <span>{{ isInCart() ? 'Agregar Otra' : 'Agregar al carrito' }}</span>
-    </button>
-     @if (isInCart()) {
+        class="btn-agregar"
+        [disabled]="!hasStock()"
+        (click)="addToCart($event)">
+        <span class="cart-icon">🛒</span>
+        <span>Agregar al carrito</span>
+      </button>
+    } @else {
+      <div class="quantity-controls" (click)="$event.stopPropagation()">
+        <button
+          class="btn-quantity btn-decrease"
+          (click)="cartService.decrementQuantity(producto.id)"
+          [disabled]="cartService.getProductQuantity(producto.id) <= 1">
+          -
+        </button>
+        <span class="quantity-display">
+          {{ cartService.getProductQuantity(producto.id) }}
+        </span>
+        <button
+          class="btn-quantity btn-increase"
+          (click)="cartService.incrementQuantity(producto.id)"
+          [disabled]="cartService.getProductQuantity(producto.id) >= producto.stock">
+          +
+        </button>
+      </div>
       <div class="in-cart-badge">
-        ✓ {{ getCartQuantity() }} {{ getCartQuantity() === 1 ? 'unidad' : 'unidades' }} en el carrito
+        ✓ {{ cartService.getProductQuantity(producto.id) }} {{ cartService.getProductQuantity(producto.id) === 1 ? 'unidad' : 'unidades' }} en el carrito
       </div>
     }
   </div>

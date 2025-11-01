@@ -26,4 +26,7 @@ export class Home implements OnInit {
   ngOnInit(): void {
     this.productService.cargarProductosMock();
   }
+
+
+
 }
