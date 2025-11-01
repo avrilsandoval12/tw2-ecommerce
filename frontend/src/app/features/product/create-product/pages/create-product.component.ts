@@ -1,9 +1,9 @@
 import { Component, inject, OnDestroy, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Products } from '../../api/services/products/products-service';
-import { Product } from '../../core/models/product.model';
+import { Products } from '../../../../core/services/products-service';
+import { Product } from '../../../../core/models/product.model';
 import { Router, RouterLink } from '@angular/router';
-import { FormProductComponent } from '../../core/components/product-form/product-form.component';
+import { FormProductComponent } from '../../../../shared/components/product-form/product-form.component';
 
 
 

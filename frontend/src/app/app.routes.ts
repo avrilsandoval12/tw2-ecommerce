@@ -2,11 +2,11 @@
 
 import { Routes } from '@angular/router';
 import { Home } from './features/home/home';
-import { DetailProduct } from './pages/detail-product/detail-product';
-import { CartComponent } from './pages/cart/cart';
-import { FormProductComponent  } from './core/components/product-form/product-form.component';
-import { CreateProductComponent } from './pages/create-product/create-product.component';
-import { UpdateProductComponent } from './pages/update-product/update-product.component';
+import { DetailProduct } from './features/product/detail-product/pages/detail-product';
+import { CartComponent } from './features/cart/cart';
+import { FormProductComponent  } from './shared/components/product-form/product-form.component';
+import { CreateProductComponent } from './features/product/create-product/pages/create-product.component';
+import { UpdateProductComponent } from './features/product/update-product/pages/update-product.component';
 
 export const routes: Routes = [
   { path: '', component: Home },

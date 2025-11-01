@@ -1,9 +1,9 @@
 import { Component, inject, OnInit, signal } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { Products } from '../../api/services/products/products-service';
-import { Product } from '../../core/models/product.model';
+import { Products } from '../../../../core/services/products-service';
+import { Product } from '../../../../core/models/product.model';
 import { CommonModule } from '@angular/common';
-import { CartService } from '../../api/services/cart/cart-service';
+import { CartService } from '../../../../core/services/cart-service';
 
 @Component({
   selector: 'app-detail-product',

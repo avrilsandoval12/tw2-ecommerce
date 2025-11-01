@@ -1,7 +1,7 @@
 import { Component, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink, RouterLinkActive } from '@angular/router';
-import { CartService } from '../../api/services/cart/cart-service';
+import { CartService } from '../../core/services/cart-service';
 
 @Component({
   selector: 'app-header',

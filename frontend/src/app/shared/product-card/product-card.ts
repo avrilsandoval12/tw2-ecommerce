@@ -1,7 +1,7 @@
 import { Component, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Product } from '../../core/models/product.model';
-import { CartService } from '../../api/services/cart/cart-service';
+import { CartService } from '../../core/services/cart-service';
 import {Router} from '@angular/router';
 
 @Component({

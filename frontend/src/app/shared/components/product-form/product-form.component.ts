@@ -1,7 +1,7 @@
 import { Component, inject, input, output, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
-import { Product } from '../../models/product.model';
+import { Product } from '../../../core/models/product.model';
 
 @Component({
   selector: 'app-form-product',
