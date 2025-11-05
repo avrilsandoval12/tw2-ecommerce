@@ -9,23 +9,33 @@ import { ProductFilters } from '../models/productFilters.model';
 export class ProductService {
   private readonly apiUrl = `${environment.apiUrl}/productos`;
 
-  private _productos = signal<Product[]>([]);
-  private _filtros = signal<ProductFilters>({});
+  private _products = signal<Product[]>([]);
+  private _filters = signal<ProductFilters>({});
   private _loading = signal<boolean>(false);
   private _error = signal<string | null>(null);
 
-  productos = computed(() => this._productos());
-  filtros = computed(() => this._filtros());
+  products = computed(() => this._products());
+  filters = computed(() => this._filters());
   loading = computed(() => this._loading());
   error = computed(() => this._error());
 
-  productosFiltrados = computed(() => {
-    const filtros = this._filtros();
-    return this._productos().filter(p => {
-      const matchNombre = filtros.nombre ? p.nombre.toLowerCase().includes(filtros.nombre.toLowerCase()) : true;
-      const matchCategoria = filtros.categoria ? p.categoria === filtros.categoria : true;
-      const matchPrecio = (filtros.precioMin != null ? p.precio >= filtros.precioMin : true)
-                      && (filtros.precioMax != null ? p.precio <= filtros.precioMax : true);
+productosFiltrados = computed(() => {
+    const productos = this._products();
+    const f = this._filters();
+
+    return productos.filter(p => {
+      const matchNombre = f.nombre
+        ? p.nombre.toLowerCase().includes(f.nombre.toLowerCase())
+        : true;
+
+      const matchCategoria = f.categoria
+        ? p.categoria?.toLowerCase() === f.categoria.toLowerCase()
+        : true;
+
+      const matchPrecio =
+        (f.precioMin == null || p.precio >= f.precioMin) &&
+        (f.precioMax == null || p.precio <= f.precioMax);
+
       return matchNombre && matchCategoria && matchPrecio;
     });
   });
@@ -36,28 +46,30 @@ export class ProductService {
 
   cargarProductosMock() {
     const mock: Product[] = [
-      { id: 1, nombre: 'ToteBag', precio: 32000, imagen: '/public/productos/1.jpg' },
-      { id: 2, nombre: 'Bolso', precio: 41000, imagen: '/public/productos/2.jpg' },
-      { id: 3, nombre: 'Bil', precio: 15000, imagen: '/public/productos/3.jpg' },
+      { id: 1, nombre: 'ToteBag', precio: 32000, imagen: 'products/1.jpeg', categoria: '1' },
+      { id: 2, nombre: 'Bolso', precio: 41000, imagen: 'products/2.jpg', categoria: '2' },
+      { id: 3, nombre: 'MiniBag', precio: 30000, imagen: 'products/3.jpg', categoria: '3' },
+      { id: 1, nombre: 'ToteBag', precio: 32000, imagen: 'products/1.jpeg' },
+      { id: 2, nombre: 'Bolso', precio: 41000, imagen: 'products/2.jpg' },
+      { id: 3, nombre: 'MiniBag', precio: 30000, imagen: 'products/3.jpg' },
     ];
-    this._productos.set(mock);
+    this._products.set(mock);
   }
 
-  setFilters(filtros: ProductFilters) {
-    this._filtros.set(filtros);
-    localStorage.setItem('filtrosProductos', JSON.stringify(filtros));
+  setFilter<K extends keyof ProductFilters>(key: K, value: ProductFilters[K]) {
+    const updated = { ...this._filters(), [key]: value };
+    this._filters.set(updated);
+    localStorage.setItem('filtrosProductos', JSON.stringify(updated));
+  }
+
+ clearFilters() {
+    this._filters.set({});
+    localStorage.removeItem('filtrosProductos');
   }
 
   loadFilters() {
-    const filtros = localStorage.getItem('filtrosProductos');
-    if (filtros) {
-      this._filtros.set(JSON.parse(filtros));
-    }
-  }
-
-  clearFilters() {
-    this._filtros.set({});
-    localStorage.removeItem('filtrosProductos');
+    const stored = localStorage.getItem('filtrosProductos');
+    if (stored) this._filters.set(JSON.parse(stored));
   }
 
 
@@ -79,5 +91,4 @@ export class ProductService {
   //     });
   // }
 }
-export { ProductFilters };
 

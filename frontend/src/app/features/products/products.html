@@ -1,17 +1,76 @@
-<div class="filtros">
-  <input type="text" placeholder="Buscar por nombre..." [(ngModel)]="filtros().nombre" (input)="aplicarFiltros()">
+<div class="container mt-4">
+    <!-- Filtros -->
+    <div class="row g-3 align-items-end mb-4 filtros-container">
+      <div class="col-12 col-md-3">
+        <label class="form-label fw-semibold">Buscar producto</label>
+        <input
+          type="text"
+          class="form-control"
+          [value]="productService.filters().nombre || ''"
+          (input)="updateFilter('nombre', $any($event.target).value)"
+          placeholder="Ej: bolso, tote..."
+        />
+      </div>
 
-  <select [(ngModel)]="filtros().categoria" (change)="aplicarFiltros()">
-    <option value="">Todas las categorías</option>
-    <option *ngFor="let cat of categoryService.categorias()" [value]="cat.nombre">{{ cat.nombre }}</option>
-  </select>
+      <div class="col-12 col-md-3">
+        <label class="form-label fw-semibold">Categoría</label>
+        <select
+          class="form-select"
+          [value]="productService.filters().categoria || ''"
+          (change)="updateFilter('categoria', $any($event.target).value)"
+        >
+          <option value="">Todas</option>
+          <option
+            *ngFor="let cat of categoryService.categorias()"
+            [value]="cat.nombre"
+          >
+            {{ cat.nombre }}
+          </option>
+        </select>
+      </div>
 
-  <input type="number" placeholder="Precio mínimo" [(ngModel)]="filtros().precioMin" (input)="aplicarFiltros()">
-  <input type="number" placeholder="Precio máximo" [(ngModel)]="filtros().precioMax" (input)="aplicarFiltros()">
+      <div class="col-12 col-md-4">
+        <label class="form-label fw-semibold">Rango de precios</label>
 
-  <button (click)="limpiarFiltros()">Limpiar filtros</button>
-</div>
+        <div class="range-container">
+          <div class="slider-track"></div>
+          <input
+            type="range"
+            [min]="precioMinGlobal"
+            [max]="precioMaxGlobal"
+            step="1000"
+            [value]="minValue"
+            (input)="onRangeChangeMin($event)"
+          />
+          <input
+            type="range"
+            [min]="precioMinGlobal"
+            [max]="precioMaxGlobal"
+            step="1000"
+            [value]="maxValue"
+            (input)="onRangeChangeMax($event)"
+          />
+        </div>
 
-<div class="productos">
-  <app-product-card *ngFor="let producto of productService.productosFiltrados()" [producto]="producto"></app-product-card>
+        <div class="d-flex justify-content-between mt-2 text-muted">
+          <small>Desde: {{ minValue | currency:'ARS' }}</small>
+          <small>Hasta: {{ maxValue | currency:'ARS' }}</small>
+        </div>
+      </div>
+
+      <div class="col-12 col-md-2 text-md-end text-center">
+        <button class="btn btn-outline-secondary w-100" (click)="clearFilters()">
+          Limpiar
+        </button>
+      </div>
+    </div>
+
+    <div class="row g-4">
+      <div
+        class="col-12 col-sm-6 col-md-4 col-lg-3"
+        *ngFor="let product of productService.productosFiltrados()"
+      >
+        <app-product-card [product]="product"></app-product-card>
+      </div>
+    </div>
 </div>

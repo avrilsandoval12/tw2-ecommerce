@@ -10,5 +10,5 @@ import { Product } from '../../core/models/product.model';
   styleUrls: ['./product-card.scss']
 })
 export class ProductCard {
-  @Input({ required: true }) producto!: Product;
+  @Input({ required: true }) product!: Product;
 }
