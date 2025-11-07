@@ -1,6 +1,7 @@
 export interface ProductFilters {
-  nombre?: string;
-  categoria?: string;
-  precioMin?: number;
-  precioMax?: number;
+  name?: string;
+  category?: string;
+  minPrice?: number;
+  maxPrice?: number;
+  sort?: 'priceAsc' | 'priceDesc' | 'nameAsc' | 'categoryAsc';
 }

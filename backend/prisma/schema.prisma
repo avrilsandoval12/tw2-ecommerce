@@ -16,12 +16,19 @@ model User {
   address  String
 }
 
-model Product {
-  id             Int     @id @default(autoincrement())
-  name           String
-  description    String
-  classification String
-  price          Float
-  imageUrl       String?
-  stock          Int     @default(0)
+model category {
+  id      Int       @id @default(autoincrement())
+  name    String    @db.VarChar(100)
+  product product[]
+}
+
+model product {
+  id          Int      @id @default(autoincrement())
+  name        String   @db.VarChar(150)
+  description String?
+  price       Decimal  @db.Decimal(10, 2)
+  imgurl      String?  @db.VarChar(255)
+  stock       Int?
+  categoryid  Int
+  category    category @relation(fields: [categoryid], references: [id], onDelete: NoAction, onUpdate: NoAction)
 }

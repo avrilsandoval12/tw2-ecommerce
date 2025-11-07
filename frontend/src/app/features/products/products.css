@@ -66,3 +66,13 @@
   width: calc((var(--min) / var(--maxRange)) * 100%);
 }
 
+.filters-sidebar {
+  width: 280px;
+  transform: translateX(100%);
+  transition: transform 0.3s ease;
+  z-index: 1050;
+}
+
+.filters-sidebar.show {
+  transform: translateX(0);
+}

@@ -1,13 +1,13 @@
 <div class="product-card">
   <div class="image-container">
-    <img [src]="product.imagen" [alt]="product.nombre" loading="lazy" />
+    <img [src]="'products/' + product.imgurl" [alt]="product.name" loading="lazy" />
   </div>
 
   <div class="info">
-    <h3 class="nombre">{{ product.nombre }}</h3>
+    <h3 class="nombre">{{ product.name }}</h3>
 
     <p class="precio">
-      {{ product.precio | currency:'ARS':'symbol':'1.0-0' }}
+      {{ product.price | currency:'ARS':'symbol':'1.0-0' }}
     </p>
 
     <button class="btn-agregar">
