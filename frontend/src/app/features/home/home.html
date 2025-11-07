@@ -9,13 +9,39 @@
     </carousel>
   </div>
 
-  <div class="productos mt-5">
-    <h2 class="text-center mb-3">Nuestros productos</h2>
+  <div class="productos mb-5 mt-5">
+    <h2 class="text-center mb-3">Nuestros Productos</h2>
 
-    <div class="carousel-productos d-flex overflow-auto gap-3 px-3">
-      @for (product of products(); track product.id) {
-      <app-product-card [product]="product"></app-product-card>
-      }
+    <div class="position-relative">
+      <button class="btn btn-outline-primary position-absolute start-0 top-50 translate-middle-y z-3"
+              (click)="scrollLeft()">
+        <i class="bi bi-chevron-left"></i>
+      </button>
+
+      <div #carouselProductos class="carousel-productos d-flex overflow-auto gap-5 px-3 py-2">
+        <app-product-card *ngFor="let product of randomProducts() | slice:0:12" [product]="product"></app-product-card>
+      </div>
+
+      <button class="btn btn-outline-primary position-absolute end-0 top-50 translate-middle-y z-3 m-1"
+              (click)="scrollRight()">
+        <i class="bi bi-chevron-right"></i>
+      </button>
+    </div>
+
+    <div class="text-center mt-1">
+      <a routerLink="/products" class="btn btn-primary">Ver catálogo</a>
+    </div>
+  </div>
+
+  <div class="categorias mb-5">
+    <div class="d-flex justify-content-center gap-5">
+      <div class="col-6 col-md-1 col-lg-1" *ngFor="let cat of categories()">
+        <div class="card text-center h-100 p-2" (click)="goToCategory(cat.name)" style="cursor:pointer;">
+          <div class="card-body p-2">
+            <h6 class="card-title">{{ cat.name }}</h6>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 </section>
