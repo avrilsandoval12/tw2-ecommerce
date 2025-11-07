@@ -15,15 +15,15 @@ export class Home implements OnInit {
 
   private productService = inject(ProductService);
 
-  productos = computed(() => this.productService.productos());
+  products = computed(() => this.productService.products());
 
-  novedades = signal([
+  news = signal([
     { id: 1, titulo: 'Descuentos Fin-Temporada', imagen: 'carousel/1.png' },
     { id: 2, titulo: 'Colección Limitada', imagen: 'carousel/2.png' },
     { id: 3, titulo: 'Nueva Temporada', imagen: 'carousel/3.png' },
   ]);
 
   ngOnInit(): void {
-    this.productService.cargarProductosMock();
+    this.productService.getAll();
   }
 }
