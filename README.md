@@ -4,4 +4,14 @@ Estructura base:
 - /backend (Express + Prisma)
 - /frontend (Angular)
 
-Ir a cada carpeta y ejecutar `npm install` cuando se agregue el código.
+## 🚀 Cómo arrancar el proyecto
+
+### 1️⃣ Instalar dependencias
+```bash
+npm install
+
+### 2️⃣ Ejecutar el servidor en modo desarrollo
+npm run dev 
+
+### Ver base de datos
+npx prisma studio
