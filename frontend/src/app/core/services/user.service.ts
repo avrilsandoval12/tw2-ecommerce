@@ -2,7 +2,7 @@ import { inject, Injectable } from "@angular/core";
 import { environment } from "../../../environments/environment.development";
 import { Observable } from "rxjs/internal/Observable";
 import { HttpClient } from "@angular/common/http";
-import { UserProfile } from "../../shared/interfaces/auth.model";
+import { UpdateProfileRequest, UserProfile } from "../../shared/interfaces/auth.model";
 
 interface ProfileResponse {
   message: string;
@@ -20,7 +20,7 @@ export class UserService {
     return this.http.get<ProfileResponse>(`${this.apiUrl}/profile`);
   }
 
-  updateProfile(data: Partial<UserProfile>): Observable<ProfileResponse> {
+  updateProfile(data: UpdateProfileRequest): Observable<ProfileResponse> {
     return this.http.put<ProfileResponse>(`${this.apiUrl}/profile`, data);
   }
 }

@@ -18,3 +18,9 @@ export interface UserProfile {
   email: string;
   address: string;
 }
+
+export interface UpdateProfileRequest {
+  name?: string;
+  lastname?: string;
+  address?: string;
+}

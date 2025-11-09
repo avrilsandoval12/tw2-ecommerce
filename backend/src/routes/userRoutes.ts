@@ -7,5 +7,6 @@ const router = Router();
 router.use(authGuard);
 
 router.get("/profile", UserController.getProfile);
+router.put("/profile", UserController.updateProfile);
 
 export default router;
