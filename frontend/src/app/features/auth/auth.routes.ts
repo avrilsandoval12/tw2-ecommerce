@@ -7,4 +7,9 @@ export const AUTH_ROUTES: Routes = [
     loadComponent: () => import('./pages/login/login.component').then((m) => m.LoginComponent),
     canActivate: [guestGuard], // Solo si NO está autenticado
   },
+  {
+    path: 'register',
+    loadComponent: () => import('./pages/register/register').then(r => r.Register),
+    canActivate: [guestGuard], // Solo si NO está autenticado
+  }
 ];
