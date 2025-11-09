@@ -19,8 +19,23 @@ export interface UserProfile {
   address: string;
 }
 
+export interface AuthRegister {
+  name: string,
+  lastname: string,
+  address: string,
+  email: string,
+  password: string
+}
+
 export interface UpdateProfileRequest {
   name?: string;
   lastname?: string;
   address?: string;
 }
+
+export interface RegisterBackendErrors{
+  type: string,
+  value: string,
+  msg: string
+}
+

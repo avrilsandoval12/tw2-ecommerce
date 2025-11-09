@@ -1,0 +1,98 @@
+<div class="container my-5">
+  <div class="row justify-content-center">
+    <div class="col-lg-7 col-md-9">
+      <div class="card shadow-lg border-0 rounded-3">
+        <div class="card-body p-4 p-sm-5">
+
+          <h2 class="card-title text-center mb-4 fw-light fs-3">
+            ✨ ¡Crea tu cuenta!
+          </h2>
+
+          <!-- ALERTA ÉXITO -->
+          @if (successMessage()) {
+            <div class="alert alert-success d-flex align-items-start gap-2 py-2 px-3 shadow-sm border-0 mb-3">
+              <div class="flex-grow-1 small">
+                <div>{{ successMessage() }}</div>
+              </div>
+            </div>
+          }
+
+          <!-- ALERTA ERRORES BACKEND -->
+          @if (errorMessage().length) {
+            <div class="alert alert-danger d-flex align-items-start gap-2 py-2 px-3 shadow-sm border-0">
+
+                @for (msg of errorMessage(); track $index) {
+                  <p class="text-danger">{{ msg }}</p>
+                }
+            </div>
+          }
+
+          <form [formGroup]="myForm" (ngSubmit)="onSubmit()">
+
+            <div class="row g-3 mb-3">
+              <div class="col-md-6">
+                <label for="name" class="form-label">Nombre</label>
+                <input
+                  type="text"
+                  id="name"
+                  class="form-control"
+                  formControlName="name"
+                />
+              </div>
+
+              <div class="col-md-6">
+                <label for="lastname" class="form-label">Apellido</label>
+                <input
+                  type="text"
+                  id="lastname"
+                  class="form-control"
+                  formControlName="lastname"
+                />
+              </div>
+            </div>
+
+            <div class="mb-3">
+              <label for="address" class="form-label">Dirección</label>
+              <input
+                type="text"
+                id="address"
+                class="form-control"
+                placeholder="Ej: Av. Siempreviva 742"
+                formControlName="address"
+              />
+            </div>
+
+            <div class="mb-3">
+              <label for="email" class="form-label">Email</label>
+              <input
+                type="email"
+                id="email"
+                class="form-control"
+                placeholder="tu@email.com"
+                formControlName="email"
+              />
+            </div>
+
+            <div class="mb-3">
+              <label for="password" class="form-label">Contraseña</label>
+              <input
+                type="password"
+                id="password"
+                class="form-control"
+                formControlName="password"
+              />
+            </div>
+
+            <div class="d-grid mt-4">
+              <button class="btn btn-primary btn-lg" type="submit" [disabled]="isLoading()">
+                {{ isLoading() ? 'Registrando...' : 'Registrarse' }}
+              </button>
+            </div>
+
+          </form>
+
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

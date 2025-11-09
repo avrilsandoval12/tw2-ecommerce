@@ -4,11 +4,13 @@ import { Router } from '@angular/router';
 import { environment } from '../../../environments/environment.development';
 import { catchError, Observable, tap, throwError } from 'rxjs';
 import { LoginRequest, AuthResponse, UserProfile } from '../../shared/interfaces/auth.model';
+import { AuthRegister } from '../models/auth.model';
 
 @Injectable({
   providedIn: 'root',
 })
 export class AuthService {
+
   private readonly http = inject(HttpClient);
   private router = inject(Router);
   private readonly tokenKey = environment.tokenKey;
@@ -49,6 +51,10 @@ export class AuthService {
   private setUser(user: UserProfile): void {
     localStorage.setItem('currentUser', JSON.stringify(user));
     this.currentUser.set(user);
+  }
+
+  register(data : AuthRegister) {
+    return this.http.post(`${environment.apiUrl}/auth/register`, data)
   }
 
   private setToken(token: string): void {
