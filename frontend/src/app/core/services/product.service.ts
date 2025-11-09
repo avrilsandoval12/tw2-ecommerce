@@ -1,46 +1,101 @@
 import { Injectable, signal, computed } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { catchError, of } from 'rxjs';
+import { catchError, map, of } from 'rxjs';
 import { environment } from '../../../environments/environment';
+import { ProductFilters } from '../../shared/interfaces/productFilters.model';
 import { Product } from '../../shared/interfaces/product.model';
 
 @Injectable({ providedIn: 'root' })
 export class ProductService {
-  private readonly apiUrl = `${environment.apiUrl}/productos`;
+  private readonly apiUrl = `${environment.apiUrl}/products`;
+  private readonly storageKey = 'productFilters';
 
-  private _productos = signal<Product[]>([]);
+  private _products = signal<Product[]>([]);
+  private _filters = signal<ProductFilters>(this.loadFiltersFromStorage());
   private _loading = signal<boolean>(false);
   private _error = signal<string | null>(null);
 
-  productos = computed(() => this._productos());
+  products = computed(() => this._products());
+  filters = computed(() => this._filters());
   loading = computed(() => this._loading());
   error = computed(() => this._error());
 
+  productosFiltrados = computed(() => {
+    const filters = this._filters();
+
+    let result = this._products().filter((p) => {
+      const matchSearch = filters.name
+        ? p.name.toLowerCase().includes(filters.name.toLowerCase()) ||
+          p.category?.name.toLowerCase().includes(filters.name.toLowerCase())
+        : true;
+
+      const matchCategory = filters.category ? p.category?.name === filters.category : true;
+
+      const matchPrice =
+        (filters.minPrice != null ? p.price >= filters.minPrice : true) &&
+        (filters.maxPrice != null ? p.price <= filters.maxPrice : true);
+
+      return matchSearch && matchCategory && matchPrice;
+    });
+
+    switch (filters.sort) {
+      case 'priceAsc':
+        result = result.sort((a, b) => a.price - b.price);
+        break;
+      case 'priceDesc':
+        result = result.sort((a, b) => b.price - a.price);
+        break;
+      case 'nameAsc':
+        result = result.sort((a, b) => a.name.localeCompare(b.name));
+        break;
+      case 'categoryAsc':
+        result = result.sort((a, b) =>
+          (a.category?.name || '').localeCompare(b.category?.name || '')
+        );
+        break;
+    }
+
+    return result;
+  });
+
   constructor(private http: HttpClient) {}
 
-  cargarProductosMock() {
-    const mock: Product[] = [
-      { id: 1, nombre: 'ToteBag', precio: 32000, imagen: '/public/productos/1.jpg' },
-      { id: 2, nombre: 'Bolso', precio: 41000, imagen: '/public/productos/2.jpg' },
-      { id: 3, nombre: 'Billetera', precio: 15000, imagen: '/public/productos/3.jpg' },
-    ];
-    this._productos.set(mock);
-  }
-
-  cargarProductos() {
+  getAll() {
     this._loading.set(true);
-
-    this.http.get<Product[]>(this.apiUrl)
+    return this.http
+      .get<{ message: string; data: Product[] }>(this.apiUrl)
       .pipe(
-        catchError(err => {
-          console.error('Error al cargar productos:', err);
+        map((res) => res.data),
+        catchError((err) => {
+          console.error('Error fetching products:', err);
           this._error.set('No se pudieron cargar los productos');
           return of([]);
         })
       )
-      .subscribe((productos) => {
-        this._productos.set(productos);
+      .subscribe((products) => {
+        this._products.set(products);
         this._loading.set(false);
       });
+  }
+
+  setFilter<K extends keyof ProductFilters>(key: K, value: ProductFilters[K]) {
+    this._filters.update((prev) => {
+      const updated = { ...prev, [key]: value };
+      localStorage.setItem(this.storageKey, JSON.stringify(updated));
+      return updated;
+    });
+  }
+
+  clearFilters() {
+    this._filters.set({});
+    localStorage.removeItem(this.storageKey);
+  }
+
+  private loadFiltersFromStorage(): ProductFilters {
+    try {
+      return JSON.parse(localStorage.getItem(this.storageKey) ?? '{}');
+    } catch {
+      return {};
+    }
   }
 }

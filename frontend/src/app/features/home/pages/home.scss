@@ -1,21 +1,31 @@
-.home {
-  .carousel-novedades {
-    overflow: hidden;
-    img {
-      width: 100%;
-      object-fit: cover;
-      height: 600px;
-    }
+.carousel-novedades {
+  overflow: hidden;
+  img {
+    width: 100%;
+    object-fit: cover;
+    height: 600px;
   }
+}
 
-  .productos {
-    .carousel-productos {
-      scroll-behavior: smooth;
-      padding-bottom: 1rem;
+.carousel-productos {
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none;  /* IE 10+ */
+}
 
-      &::-webkit-scrollbar {
-        display: none;
-      }
-    }
-  }
+.carousel-productos::-webkit-scrollbar {
+  display: none; /* Chrome/Safari */
+}
+
+.carousel-productos app-product-card {
+  flex: 0 0 auto;
+  width: 200px; /* Ajusta según tamaño de card */
+}
+
+.carousel-caption h5 {
+  font-size: 1.2rem;
+}
+
+.card img {
+  height: 100px;
+  object-fit: cover;
 }

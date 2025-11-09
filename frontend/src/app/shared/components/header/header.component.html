@@ -15,9 +15,11 @@
           <a class="nav-link" routerLink="/products" routerLinkActive="active"
             [routerLinkActiveOptions]="{ exact: true }">Productos</a>
         </li>
+        @if(isAuthenticated()) {
         <li class="nav-item">
           <a class="nav-link" routerLink="/orders" routerLinkActive="active">Mis pedidos</a>
         </li>
+        }
       </ul>
 
       <ul class="navbar-nav align-items-center gap-2">

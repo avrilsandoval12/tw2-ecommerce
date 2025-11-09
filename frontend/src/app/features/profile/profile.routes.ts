@@ -5,6 +5,6 @@ export const PROFILE_ROUTES: Routes = [
   {
     path: 'profile',
     loadComponent: () => import('./pages/profile.component').then((m) => m.ProfileComponent),
-    canActivate: [authGuard]
+    canActivate: [authGuard] // Protegida: Solo usuarios autenticados
   },
 ];
