@@ -1,0 +1,19 @@
+:host {
+  display: block;
+  min-height: calc(100vh - 56px);
+  background-color: #f8f9fa;
+}
+
+.card {
+  border: none;
+  border-radius: 1rem;
+}
+
+.card-header {
+  border-radius: 1rem 1rem 0 0 !important;
+  padding: 1.5rem;
+}
+
+.row {
+  align-items: center;
+}

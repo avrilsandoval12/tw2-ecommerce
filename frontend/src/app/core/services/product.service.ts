@@ -2,8 +2,8 @@ import { Injectable, signal, computed } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { catchError, map, of } from 'rxjs';
 import { environment } from '../../../environments/environment';
-import { Product } from '../models/product.model';
-import { ProductFilters } from '../models/productFilters.model';
+import { ProductFilters } from '../../shared/interfaces/productFilters.model';
+import { Product } from '../../shared/interfaces/product.model';
 
 @Injectable({ providedIn: 'root' })
 export class ProductService {
@@ -23,15 +23,13 @@ export class ProductService {
   productosFiltrados = computed(() => {
     const filters = this._filters();
 
-    let result = this._products().filter(p => {
+    let result = this._products().filter((p) => {
       const matchSearch = filters.name
-      ? p.name.toLowerCase().includes(filters.name.toLowerCase()) ||
-        p.category?.name.toLowerCase().includes(filters.name.toLowerCase())
-      : true;
-
-      const matchCategory = filters.category
-        ? p.category?.name === filters.category
+        ? p.name.toLowerCase().includes(filters.name.toLowerCase()) ||
+          p.category?.name.toLowerCase().includes(filters.name.toLowerCase())
         : true;
+
+      const matchCategory = filters.category ? p.category?.name === filters.category : true;
 
       const matchPrice =
         (filters.minPrice != null ? p.price >= filters.minPrice : true) &&
@@ -60,7 +58,6 @@ export class ProductService {
     return result;
   });
 
-
   constructor(private http: HttpClient) {}
 
   getAll() {
@@ -68,8 +65,8 @@ export class ProductService {
     return this.http
       .get<{ message: string; data: Product[] }>(this.apiUrl)
       .pipe(
-        map(res => res.data),
-        catchError(err => {
+        map((res) => res.data),
+        catchError((err) => {
           console.error('Error fetching products:', err);
           this._error.set('No se pudieron cargar los productos');
           return of([]);
@@ -82,7 +79,7 @@ export class ProductService {
   }
 
   setFilter<K extends keyof ProductFilters>(key: K, value: ProductFilters[K]) {
-    this._filters.update(prev => {
+    this._filters.update((prev) => {
       const updated = { ...prev, [key]: value };
       localStorage.setItem(this.storageKey, JSON.stringify(updated));
       return updated;

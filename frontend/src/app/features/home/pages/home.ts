@@ -1,19 +1,18 @@
 import { Component, OnInit, computed, signal, inject, ViewChild, ElementRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ProductService } from '../../core/services/product.service';
+import { ProductService } from '../../../core/services/product.service';
 import { CarouselModule } from 'ngx-bootstrap/carousel';
-import { ProductCard } from '../../shared/product-card/product-card';
-import { Product } from '../../core/models/product.model';
-import { Category } from '../../core/models/category.model';
-import { CategoryService } from '../../core/services/category.service';
-import { Router, RouterLink} from '@angular/router';
-
+import { ProductCard } from '../../../shared/components/product-card/product-card';
+import { Product } from '../../../shared/interfaces/product.model';
+import { Category } from '../../../shared/interfaces/category.model';
+import { CategoryService } from '../../../core/services/category.service';
+import { Router, RouterLink } from '@angular/router';
 @Component({
   selector: 'app-home',
   standalone: true,
   imports: [CommonModule, CarouselModule, ProductCard, RouterLink],
   templateUrl: './home.html',
-  styleUrls: ['./home.scss']
+  styleUrls: ['./home.scss'],
 })
 export class Home implements OnInit {
   private router = inject(Router);
@@ -55,5 +54,4 @@ export class Home implements OnInit {
 
     this.router.navigate(['/products']);
   }
-
 }

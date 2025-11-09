@@ -8,16 +8,19 @@ const authRepository = new UserRepository();
 const authService = new AuthService(authRepository);
 
 export class AuthController {
-
-    static createAccount = async (req: Request, res : Response) => {
-        try{
+    static createAccount = async (req: Request, res: Response) => {
+        try {
             const user = req.body;
             await authService.create(user);
-            res.status(201).json({message: "Cuenta creada correctamente!"})
-        }catch(err){
-            res.status(500).json({error: err.message})
+            res.status(201).json({ message: "Cuenta creada correctamente!" });
+        } catch (err) {
+            if (err instanceof BadRequestException) {
+                return res.status(400).json({ error: err.message });
+            }
+
+            res.status(500).json({ error: err.message });
         }
-    }
+    };
 
     static login = async (req: Request, res: Response) => {
         try {

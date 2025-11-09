@@ -2,7 +2,7 @@ import { Injectable, signal, computed } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { catchError, map, of } from 'rxjs';
 import { environment } from '../../../environments/environment';
-import { Category } from '../models/category.model';
+import { Category } from '../../shared/interfaces/category.model';
 
 @Injectable({ providedIn: 'root' })
 export class CategoryService {
@@ -21,10 +21,11 @@ export class CategoryService {
   getCategories() {
     this._loading.set(true);
 
-    this.http.get<{ message: string; data: Category[] }>(this.apiUrl)
+    this.http
+      .get<{ message: string; data: Category[] }>(this.apiUrl)
       .pipe(
-        map(res => res.data),
-        catchError(err => {
+        map((res) => res.data),
+        catchError((err) => {
           console.error('Error al cargar categorías:', err);
           this._error.set('No se pudieron cargar las categorías');
           this._loading.set(false);

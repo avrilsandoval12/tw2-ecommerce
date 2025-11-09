@@ -13,3 +13,9 @@ export interface UserDTO {
     lastname: string;
     address: string;
 }
+
+export interface UpdateUserDTO {
+    name?: string;
+    lastname?: string;
+    address?: string;
+}

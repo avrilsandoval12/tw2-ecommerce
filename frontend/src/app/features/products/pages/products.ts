@@ -1,16 +1,16 @@
 import { Component, OnInit, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { ProductService } from '../../core/services/product.service';
-import { CategoryService } from '../../core/services/category.service';
-import { ProductCard } from '../../shared/product-card/product-card';
+import { ProductService } from '../../../core/services/product.service';
+import { CategoryService } from '../../../core/services/category.service';
+import { ProductCard } from '../../../shared/components/product-card/product-card';
 
 @Component({
   selector: 'app-products',
   standalone: true,
   imports: [CommonModule, FormsModule, ProductCard],
   templateUrl: './products.html',
-  styleUrls: ['./products.css']
+  styleUrls: ['./products.css'],
 })
 export class Products implements OnInit {
   readonly precioMinGlobal = 10000;
@@ -23,10 +23,7 @@ export class Products implements OnInit {
 
   sidebarOpen = false;
 
-  constructor(
-    public productService: ProductService,
-    public categoryService: CategoryService
-  ) {}
+  constructor(public productService: ProductService, public categoryService: CategoryService) {}
 
   ngOnInit(): void {
     this.productService.getAll();
