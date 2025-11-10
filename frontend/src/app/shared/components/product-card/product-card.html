@@ -10,8 +10,35 @@
       {{ product.price | currency:'ARS':'symbol':'1.0-0' }}
     </p>
 
-    <button class="btn-agregar">
-      Agregar al carrito
-    </button>
+   @if (!cartService.isInCart(product.id)) {
+      <button
+        class="btn-agregar"
+        [disabled]="!hasStock()"
+        (click)="addToCart($event)">
+        <span class="cart-icon">🛒</span>
+        <span>Agregar al carrito</span>
+      </button>
+    } @else {
+      <div class="quantity-controls" (click)="$event.stopPropagation()">
+        <button
+          class="btn-quantity btn-decrease"
+          (click)="cartService.decrementQuantity(product.id)"
+          [disabled]="cartService.getProductQuantity(product.id) <= 1">
+          -
+        </button>
+        <span class="quantity-display">
+          {{ cartService.getProductQuantity(product.id) }}
+        </span>
+        <button
+          class="btn-quantity btn-increase"
+          (click)="cartService.incrementQuantity(product.id)"
+          [disabled]="cartService.getProductQuantity(product.id) >= product.stock">
+          +
+        </button>
+      </div>
+      <div class="in-cart-badge">
+        ✓ {{ cartService.getProductQuantity(product.id) }} {{ cartService.getProductQuantity(product.id) === 1 ? 'unidad' : 'unidades' }} en el carrito
+      </div>
+    }
   </div>
 </div>
