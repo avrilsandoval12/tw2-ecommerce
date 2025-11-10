@@ -1,0 +1,170 @@
+<div class="container py-5">
+  <div class="row">
+    <div class="col-12">
+      <h1 class="mb-4 fw-bold">Mi Carrito</h1>
+
+      @if (cartService.items().length === 0) {
+        <div class="card border-0 shadow-sm">
+          <div class="card-body text-center py-5">
+            <i class="bi bi-cart-x display-1 text-muted mb-4 d-block"></i>
+            <h3 class="mb-3">Tu carrito está vacío</h3>
+            <p class="text-muted mb-4">¡Descubrí nuestros productos destacados!</p>
+            <a routerLink="/" class="btn btn-dark btn-lg px-5">
+              <i class="bi bi-shop me-2"></i>
+              Ir a comprar
+            </a>
+          </div>
+        </div>
+      } @else {
+        <div class="row g-4">
+          <div class="col-lg-8">
+            @if (validationErrors.length > 0) {
+              <div class="alert alert-warning alert-dismissible fade show mb-4" role="alert">
+                <h5 class="alert-heading">
+                  <i class="bi bi-exclamation-triangle me-2"></i>
+                  Problemas con tu carrito
+                </h5>
+                <p class="mb-2">Los siguientes productos tienen problemas de stock:</p>
+                <ul class="mb-3">
+                  @for (error of validationErrors; track error) {
+                    <li>{{ error }}</li>
+                  }
+                </ul>
+                <hr>
+                <p class="mb-0 small">
+                  <i class="bi bi-info-circle me-1"></i>
+                 Ajustamos las cantidades del stock automaticamente.
+                </p>
+                <button
+                  type="button"
+                  class="btn-close"
+                  (click)="validationErrors = []"
+                  aria-label="Close">
+                </button>
+              </div>
+            }
+
+            <div class="card border-0 shadow-sm">
+              <div class="card-body p-4">
+                @for (item of cartService.items(); track item.product.id) {
+                  <div class="d-flex align-items-center gap-3 pb-4 mb-4 border-bottom">
+
+                    <div class="flex-shrink-0">
+                      <img
+                        [src]="item.product.imgurl ? 'products/' + item.product.imgurl : 'assets/no-image.png'"
+                        [alt]="item.product.name"
+                       class="rounded shadow-sm item-image">
+                    </div>
+
+                    <div class="flex-grow-1">
+                      <h5 class="mb-2 fw-semibold">{{ item.product.name }}</h5>
+                      <p class="text-success mb-0 fw-bold">
+                        {{ item.product.price | currency:'ARS':'symbol':'1.0-0' }}
+                      </p>
+                      @if (item.quantity >= item.product.stock * 0.8 && item.product.stock > 0) {
+                        <small class="text-warning d-block mt-1">
+                          <i class="bi bi-exclamation-circle me-1"></i>
+                          Quedan solo {{ item.product.stock - item.quantity }} unidades
+                        </small>
+                      }
+                    </div>
+
+
+                    <div class="d-flex align-items-center gap-2 flex-shrink-0">
+                      <button
+                        (click)="decreaseQuantity(item.product.id)"
+                        class="btn btn-outline-secondary btn-sm rounded-circle cart-quantity-btn"
+                        [disabled]="item.quantity <= 1"
+                        aria-label="Disminuir cantidad"
+                        title="Disminuir cantidad">
+                        <i class="bi bi-dash"></i>
+                      </button>
+
+                      <span class="fw-semibold px-2 text-center cart-quantity-display">
+                        {{ item.quantity }}
+                      </span>
+
+                      <button
+                        (click)="increaseQuantity(item.product.id)"
+                        class="btn btn-outline-secondary btn-sm rounded-circle cart-quantity-btn"
+                        [disabled]="item.quantity >= item.product.stock"
+                        aria-label="Aumentar cantidad"
+                        title="Aumentar cantidad">
+                        <i class="bi bi-plus"></i>
+                      </button>
+                    </div>
+
+                 <div class="text-end flex-shrink-0 cart-subtotal">
+                      <p class="mb-0 fw-bold fs-5 text-success">
+                        {{ (item.product.price * item.quantity) | currency:'ARS':'symbol':'1.0-0' }}
+                      </p>
+                    </div>
+                    <button
+                      (click)="removeItem(item.product.id)"
+                      class="btn btn-link text-danger p-0 border-0 flex-shrink-0"
+                      aria-label="Eliminar producto"
+                      title="Eliminar producto">
+                      <i class="bi bi-trash fs-5"></i>
+                    </button>
+                  </div>
+                }
+                <div class="text-end">
+                  <button (click)="clearCart()" class="btn btn-outline-danger">
+                    <i class="bi bi-trash me-2"></i>
+                    Vaciar Carrito
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="col-lg-4">
+            <div class="card border-0 shadow-sm sticky-top cart-summary-sticky">
+              <div class="card-body p-4">
+                <h5 class="mb-4 fw-bold">Resumen del pedido</h5>
+
+                <div class="d-flex justify-content-between mb-3 pb-3 border-bottom">
+                  <span class="text-muted">Productos ({{ cartService.totalItems() }})</span>
+                  <span class="fw-semibold">
+                    {{ cartService.totalPrice() | currency:'ARS':'symbol':'1.0-0' }}
+                  </span>
+                </div>
+
+                <div class="d-flex justify-content-between mb-3 pb-3 border-bottom">
+                  <span class="text-muted">Envío</span>
+                  <span class="text-success fw-semibold">Gratis</span>
+                </div>
+
+                <div class="d-flex justify-content-between mb-4">
+                  <span class="fs-5 fw-bold">Total</span>
+                  <span class="fs-4 fw-bold text-success">
+                    {{ cartService.totalPrice() | currency:'ARS':'symbol':'1.0-0' }}
+                  </span>
+                </div>
+
+                <button
+                  class="btn btn-dark w-100 btn-lg mb-3"
+                  (click)="proceedToCheckout()"
+                  [disabled]="isValidating || cartService.items().length === 0">
+                  @if (isValidating) {
+                    <span class="spinner-border spinner-border-sm me-2" role="status">
+                      <span class="visually-hidden">Validando...</span>
+                    </span>
+                    Validando carrito...
+                  } @else {
+                    <i class="bi bi-credit-card me-2"></i>
+                    Proceder al Pago
+                  }
+                </button>
+
+                <a routerLink="/products" class="btn btn-outline-secondary w-100">
+                  <i class="bi bi-arrow-left me-2"></i>
+                  Seguir Comprando
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+      }
+    </div>
+  </div>
+</div>

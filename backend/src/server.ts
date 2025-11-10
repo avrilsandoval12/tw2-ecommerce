@@ -4,6 +4,7 @@ import userRoutes from "./routes/userRoutes";
 import cors from "cors";
 import productRoutes from "./routes/productRoutes";
 import categoryRoutes from "./routes/categoryRoutes";
+import cartRoutes from "./routes/cartRoutes";
 
 const app = express();
 
@@ -16,5 +17,6 @@ app.use("/api/auth", authRoutes);
 app.use("/api/user", userRoutes);
 app.use("/api/products", productRoutes);
 app.use("/api/categories", categoryRoutes);
+app.use("/api/cart", cartRoutes);
 
 export default app;
