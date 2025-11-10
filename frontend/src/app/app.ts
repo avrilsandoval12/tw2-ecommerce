@@ -1,6 +1,7 @@
-import { Component, signal } from '@angular/core';
-import { RouterOutlet } from '@angular/router';
+import {Component, inject, signal} from '@angular/core';
+import {Router, RouterOutlet} from '@angular/router';
 import { HeaderComponent } from './shared/components/header/header.component'
+import {AuthService} from './core/services/auth.service';
 
 @Component({
   selector: 'app-root',
@@ -10,5 +11,18 @@ import { HeaderComponent } from './shared/components/header/header.component'
 })
 export class App {
   protected readonly title = signal('frontend');
+
+  private router = inject(Router);
+  private authService = inject(AuthService);
+
+  // Rutas donde NO queremos mostrar el header
+  private readonly noHeaderRoutes = ['/login', '/register'];
+
+  shouldShowHeader(): boolean {
+    const url = this.router.url.split('?')[0];
+    const isAuthRoute = this.noHeaderRoutes.includes(url);
+
+    return this.authService.isAuthenticated() && !isAuthRoute;
+  }
 }
 
