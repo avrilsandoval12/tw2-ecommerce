@@ -5,6 +5,7 @@ import { environment } from '../../../environments/environment.development';
 import { catchError, Observable, tap, throwError } from 'rxjs';
 import { LoginRequest, AuthResponse, UserProfile } from '../../shared/interfaces/auth.model';
 import { AuthRegister } from '../models/auth.model';
+import {ProductService} from './product.service';
 
 @Injectable({
   providedIn: 'root',
@@ -17,6 +18,7 @@ export class AuthService {
 
   isAuthenticated = signal<boolean>(!!this.getToken());
   currentUser = signal<UserProfile | null>(this.loadUserFromStorage());
+  private productService = inject(ProductService);
 
   login(credentials: LoginRequest): Observable<AuthResponse> {
     return this.http.post<AuthResponse>(`${environment.apiUrl}/auth/login`, credentials).pipe(
@@ -38,6 +40,8 @@ export class AuthService {
     this.currentUser.set(null);
     this.isAuthenticated.set(false);
     this.router.navigate(['/login']);
+
+    this.productService.clearFilters();
   }
 
   getToken(): string | null {
