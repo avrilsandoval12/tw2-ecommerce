@@ -33,9 +33,13 @@ export class ProductCard {
   }
 
   navigateToDetail(): void {
-    this.router.navigate(['/product', this.product.id]);
+    this.router.navigate(['/products', this.product.id]);
   }
 
+  handleDecrement(event: Event): void {
+    event.stopPropagation();
+    this.cartService.decrementQuantity(this.product.id);
+  }
 
 
 

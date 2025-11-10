@@ -118,9 +118,16 @@ export class CartService {
   }
 
  incrementQuantity(productId: number): void {
-    const currentQuantity = this.getProductQuantity(productId);
-    this.updateQuantity(productId, currentQuantity + 1);
-  }
+    const item = this.cartItems().find(i => i.product.id === productId);
+    if (!item) return;
+    const newQuantity = item.quantity + 1;
+    if (newQuantity > item.product.stock) {
+      console.warn(`Stock máximo alcanzado (${item.product.stock} unidades)`);
+      return;
+    }
+
+    this.updateQuantity(productId, newQuantity);
+}
 
   decrementQuantity(productId: number): void {
     const currentQuantity = this.getProductQuantity(productId);

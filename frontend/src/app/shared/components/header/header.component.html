@@ -82,94 +82,107 @@
 
 
 @if (isCartOpen()) {
-      <div
-        class="position-fixed top-0 start-0 w-100 h-100 bg-dark bg-opacity-25"
-        style="z-index: 1040;"
-        (click)="closeCart()">
+  <div
+    class="position-fixed top-0 start-0 w-100 h-100 bg-dark bg-opacity-25"
+    style="z-index: 1040;"
+    (click)="closeCart()">
+  </div>
+
+  <div
+    class="position-fixed bg-white rounded-3 shadow-lg border"
+    style="top: 70px; right: 20px; width: 400px; max-width: calc(100vw - 40px); z-index: 1050; max-height: 600px; display: flex; flex-direction: column;">
+
+    <div class="d-flex justify-content-between align-items-center p-3 border-bottom">
+      <h5 class="mb-0 fw-bold">Mi Carrito</h5>
+      <button
+        type="button"
+        class="btn-close"
+        (click)="closeCart()"
+        aria-label="Close">
+      </button>
+    </div>
+
+    @if (cartService.items().length === 0) {
+      <div class="text-center py-5 text-muted">
+        <i class="bi bi-cart-x display-4 d-block mb-3"></i>
+        <p class="mb-0">Tu carrito está vacío</p>
       </div>
-      <div
-        class="position-fixed bg-white rounded shadow-lg border"
-        style="top: 70px; right: 20px; width: 400px; max-width: calc(100vw - 40px); z-index: 1050;">
-        <div class="d-flex justify-content-between align-items-center p-3 border-bottom">
-          <h5 class="mb-0 fw-bold">Mi Carrito</h5>
-          <button
-            type="button"
-            class="btn-close"
-            (click)="closeCart()"
-            aria-label="Close">
-          </button>
-        </div>
-        @if (cartService.items().length === 0) {
-          <div class="text-center py-5 text-muted">
-            <i class="bi bi-cart-x display-4 d-block mb-3"></i>
-            <p class="mb-0">Tu carrito está vacío</p>
-          </div>
-        } @else {
-          <div class="p-3 overflow-auto" style="max-height: 400px;">
-            @for (item of cartService.items(); track item.product.id) {
-              <div class="card mb-2 border">
-                <div class="card-body p-3">
-                  <div class="d-flex gap-3">
-                    <img
-                      [src]="item.product.imgurl|| 'assets/no-image.png'"
-                      [alt]="item.product.name"
-                      class="rounded"
-                      style="width: 60px; height: 60px; object-fit: cover;">
+    }
 
-                    <div class="flex-grow-1">
-                      <h6 class="mb-1 fw-semibold">{{ item.product.name }}</h6>
-                      <p class="mb-1 text-muted small">
-                        ${{ item.product.price | number:'1.2-2' }} × {{ item.quantity }}
-                      </p>
-                      <p class="mb-0 fw-bold text-success">
-                        ${{ (item.product.price * item.quantity) | number:'1.2-2' }}
-                      </p>
-                    </div>
-                        <div class="d-flex align-items-center gap-2 mt-2">
-                                  <button
-                                    class="btn btn-sm btn-outline-secondary"
-                                    (click)="cartService.decrementQuantity(item.product.id)"
-                                    [disabled]="item.quantity <= 1"
-                                    title="Disminuir cantidad">
-                                    <i class="bi bi-dash"></i>
-                                  </button>
-
-                                  <span class="fw-semibold px-2">{{ item.quantity }}</span>
-
-                                  <button
-                                    class="btn btn-sm btn-outline-secondary"
-                                    (click)="cartService.incrementQuantity(item.product.id)"
-                                    [disabled]="item.quantity >= item.product.stock"
-                                    title="Aumentar cantidad">
-                                    <i class="bi bi-plus"></i>
-                                  </button>
-                                </div>
+    @else {
+      <div class="p-3 overflow-auto flex-grow-1" style="max-height: 400px;">
+        @for (item of cartService.items(); track item.product.id) {
+          <div class="card mb-2 border">
+            <div class="card-body p-3">
+              <div class="d-flex gap-3 align-items-start">
+                <img
+                  [src]="item.product.imgurl ? 'products/' + item.product.imgurl : 'assets/no-image.png'"
+                  [alt]="item.product.name"
+                  class="rounded flex-shrink-0"
+                  style="width: 60px; height: 60px; object-fit: cover;">
+                <div class="flex-grow-1">
+                  <h6 class="mb-1 fw-semibold">{{ item.product.name }}</h6>
+                  <p class="mb-1 text-muted small">
+                    ${{ item.product.price | number:'1.2-2' }} × {{ item.quantity }}
+                  </p>
+                  <p class="mb-2 fw-bold text-success">
+                    ${{ (item.product.price * item.quantity) | number:'1.2-2' }}
+                  </p>
+                  <div class="btn-group btn-group-sm" role="group">
                     <button
-                      class="btn btn-link text-danger p-0 border-0 align-self-start"
-                      (click)="cartService.removeFromCart(item.product.id)"
-                      title="Eliminar">
-                      <i class="bi bi-trash"></i>
+                      type="button"
+                      class="btn btn-outline-secondary"
+                      (click)="cartService.decrementQuantity(item.product.id)"
+                      [disabled]="item.quantity <= 1"
+                      title="Disminuir cantidad">
+                      <i class="bi bi-dash"></i>
+                    </button>
+
+                    <button
+                      type="button"
+                      class="btn btn-outline-secondary"
+                      disabled
+                      style="pointer-events: none;">
+                      {{ item.quantity }}
+                    </button>
+
+                    <button
+                      type="button"
+                      class="btn btn-outline-secondary"
+                      (click)="cartService.incrementQuantity(item.product.id)"
+                      [disabled]="item.quantity >= item.product.stock"
+                      title="Aumentar cantidad">
+                      <i class="bi bi-plus"></i>
                     </button>
                   </div>
                 </div>
-              </div>
-            }
-          </div>
-          <div class="border-top p-3 bg-light">
-            <div class="d-flex justify-content-between align-items-center mb-3">
-              <span class="fw-semibold">Total:</span>
-              <strong class="fs-5 text-success">
-                ${{ cartService.totalPrice() | number:'1.2-2' }}
-              </strong>
-            </div>
+                <button
+                  type="button"
+                  class="btn btn-link text-danger p-0 border-0"
+                  (click)="cartService.removeFromCart(item.product.id)"
+                  title="Eliminar">
+                  <i class="bi bi-trash"></i>
+                </button>
 
-            <a
-              routerLink="/cart"
-              class="btn btn-dark w-100 d-block text-center text-decoration-none"
-              (click)="closeCart(); $event.stopPropagation()">
-              Ver Carrito Completo
-            </a>
+              </div>
+            </div>
           </div>
         }
       </div>
+      <div class="border-top p-3 bg-light mt-auto">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+          <span class="fw-semibold">Total:</span>
+          <strong class="fs-5 text-success">
+            ${{ cartService.totalPrice() | number:'1.2-2' }}
+          </strong>
+        </div>
+        <a
+          routerLink="/cart"
+          class="btn btn-dark w-100"
+          (click)="closeCart(); $event.stopPropagation()">
+          Ver Carrito Completo
+        </a>
+      </div>
     }
+  </div>
+}
