@@ -1,0 +1,68 @@
+<div class="container">
+  <h2>Administración de Carteras</h2>
+
+  <!-- Botón de Creación -->
+  <button class="add-button" (click)="openModal()">
+    <i class="fas fa-plus"></i> Agregar Nueva Cartera
+  </button>
+
+  <!-- Tabla de Productos -->
+  <div class="table-container">
+    <table>
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Nombre</th>
+          <th>Descripción</th>
+          <th>Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let product of products">
+          <td>{{ product.id }}</td>
+          <td>{{ product.name }}</td>
+          <td>{{ product.description }}</td>
+          <td class="actions">
+            <button class="edit-btn" (click)="openModal(product)">Editar</button>
+            <button class="delete-btn" (click)="onDelete(product)">Eliminar</button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- Modal para Creación/Edición -->
+<div class="modal-backdrop" *ngIf="isModalOpen">
+  <div class="modal-content">
+    <h3>{{ isEditing ? 'Editar Cartera' : 'Crear Nueva Cartera' }}</h3>
+    
+    <form [formGroup]="productForm" (ngSubmit)="onSubmit()">
+      
+      <!-- Campo Nombre -->
+      <div class="form-group">
+        <label for="name">Nombre de la Cartera</label>
+        <input id="name" type="text" formControlName="name" required>
+        <div *ngIf="productForm.get('name')?.invalid && productForm.get('name')?.touched" class="error-message">
+          El nombre es obligatorio.
+        </div>
+      </div>
+
+      <!-- Campo Descripción -->
+      <div class="form-group">
+        <label for="description">Descripción</label>
+        <textarea id="description" formControlName="description" required></textarea>
+        <div *ngIf="productForm.get('description')?.invalid && productForm.get('description')?.touched" class="error-message">
+          La descripción es obligatoria.
+        </div>
+      </div>
+
+      <div class="modal-actions">
+        <button type="submit" [disabled]="productForm.invalid" class="save-button">
+          {{ isEditing ? 'Guardar Cambios' : 'Crear Cartera' }}
+        </button>
+        <button type="button" class="cancel-button" (click)="closeModal()">Cancelar</button>
+      </div>
+    </form>
+  </div>
+</div>
