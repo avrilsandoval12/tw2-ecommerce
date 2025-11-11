@@ -3,6 +3,7 @@ import { UserRepository } from "../repository/UserRepository";
 import { AuthService } from "../services/AuthService";
 import { UnauthorizedException } from "../exceptions/UnauthorizedException";
 import { BadRequestException } from "../exceptions/BadRequestException";
+import { ResourceNotFoundException } from "../exceptions/ResourceNotFoundException";
 
 const authRepository = new UserRepository();
 const authService = new AuthService(authRepository);
@@ -44,4 +45,35 @@ export class AuthController {
             });
         }
     };
+
+static requestPasswordReset = async (req: Request, res: Response) => {
+        try {
+            const { email } = req.body;
+
+            const frontendBaseUrl = req.body.frontendBaseUrl; 
+
+            await authService.requestPasswordReset(email, frontendBaseUrl);
+
+            res.status(200).json({ message: "Se ha enviado un enlace para restablecer la contraseña." });
+        } catch (err) {
+            if (err instanceof ResourceNotFoundException) {
+                return res.status(200).json({ message: "No se ha podido enviar un enlace para restablecer la contraseña." });
+            }
+            res.status(500).json({ error: err.message });
+        }
+    };
+
+static resetPassword = async (req: Request, res: Response) => {
+        try {
+            const { token, password } = req.body;
+            await authService.resetPassword(token, password);
+            res.status(200).json({ message: "Contraseña actualizada correctamente" });
+        } catch (err) {
+            if (err instanceof BadRequestException) {
+                return res.status(400).json({ error: err.message });
+            }
+            res.status(500).json({ error: err.message });
+        }
+    };
+
 }
