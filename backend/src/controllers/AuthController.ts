@@ -57,7 +57,7 @@ static requestPasswordReset = async (req: Request, res: Response) => {
             res.status(200).json({ message: "Se ha enviado un enlace para restablecer la contraseña." });
         } catch (err) {
             if (err instanceof ResourceNotFoundException) {
-                return res.status(200).json({ message: "No se ha podido enviar un enlace para restablecer la contraseña." });
+                return res.status(200).json({ message: err.message });
             }
             res.status(500).json({ error: err.message });
         }
