@@ -17,6 +17,8 @@ export class HeaderComponent {
 
   userName = computed(() => this.currentUser()?.name || 'Usuario');
 
+  isAdmin = computed(() => this.authService.isAdmin());
+
   onLogout(): void {
     this.authService.logout();
   }
