@@ -18,11 +18,6 @@ export class App {
   // Rutas donde NO queremos mostrar el header
   private readonly noHeaderRoutes = ['/login', '/register'];
 
-  shouldShowHeader(): boolean {
-    const url = this.router.url.split('?')[0];
-    const isAuthRoute = this.noHeaderRoutes.includes(url);
 
-    return this.authService.isAuthenticated() && !isAuthRoute;
-  }
 }
 

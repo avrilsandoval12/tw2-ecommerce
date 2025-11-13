@@ -4,7 +4,7 @@ import { Router } from '@angular/router';
 import { environment } from '../../../environments/environment.development';
 import { catchError, Observable, tap, throwError } from 'rxjs';
 import { LoginRequest, AuthResponse, UserProfile } from '../../shared/interfaces/auth.model';
-import { AuthRegister } from '../models/auth.model';
+import {AuthRegister} from '../models/auth.model'
 import {ProductService} from './product.service';
 
 @Injectable({

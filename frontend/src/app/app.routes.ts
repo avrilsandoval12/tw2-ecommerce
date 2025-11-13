@@ -6,14 +6,18 @@ import { PRODUCTS_ROUTES } from './features/products/products.routes';
 import { CART_ROUTES } from './features/cart/cart.routes';
 import {authGuard} from './core/guards/auth-guard';
 
-
 export const routes: Routes = [
+  {
+    path: '',
+    children: [
+      ...HOME_ROUTES,
+      ...PRODUCTS_ROUTES,
+    ]
+  },
   {
     path: '',
     canActivate: [authGuard],
     children: [
-      ...HOME_ROUTES,
-      ...PRODUCTS_ROUTES,
       ...PROFILE_ROUTES,
       ...CART_ROUTES
     ]
