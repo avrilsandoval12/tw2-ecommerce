@@ -1,6 +1,6 @@
 import { Injectable, signal, computed } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { catchError, map, of } from 'rxjs';
+import { catchError, map, of, Observable } from 'rxjs';
 import { environment } from '../../../environments/environment';
 import { ProductFilters } from '../../shared/interfaces/productFilters.model';
 import { Product } from '../../shared/interfaces/product.model';
@@ -97,5 +97,28 @@ export class ProductService {
     } catch {
       return {};
     }
+
+     }
+
+
+
+getProductById(id: number): Observable<Product> {
+    return this.http.get<{ message: string; data: Product }>(`${this.apiUrl}/${id}`)
+      .pipe(
+        map(res => res.data),
+        catchError((err) => {
+          console.error('Error fetching product by id:', err);
+          this._error.set('No se pudo encontrar el producto');
+          throw err;
+        })
+      );
   }
+
 }
+
+
+
+
+
+
+

@@ -1,0 +1,156 @@
+<div class="bg-light min-vh-100 py-4">
+
+  @if (spinner()) {
+    <div class="container text-center py-5">
+      <div class="spinner-border text-dark mb-3" role="status" style="width: 3rem; height: 3rem;">
+        <span class="visually-hidden">Cargando...</span>
+      </div>
+      <p class="text-muted">Cargando detalle del producto...</p>
+    </div>
+  }
+
+  @if (error() && !spinner()) {
+    <div class="container py-5">
+      <div class="card border-0 shadow-sm text-center p-5">
+        <i class="bi bi-exclamation-triangle display-1 text-warning mb-4"></i>
+        <p class="text-danger fs-5 mb-4">{{ error() }}</p>
+        <a routerLink="/products" class="btn btn-dark btn-lg">
+          <i class="bi bi-arrow-left me-2"></i> Volver a productos
+        </a>
+      </div>
+    </div>
+  }
+
+  @if (product() && !spinner() && !error()) {
+    <div class="container">
+      <div class="row g-4 g-lg-5">
+        <div class="col-lg-6">
+          <div class="position-sticky" style="top: 2rem;">
+            @if (product()!.imgurl) {
+             <img
+                [src]="'products/' + product()!.imgurl"
+                [alt]="product()!.name"
+                class="product-image img-fluid rounded shadow-sm w-100">
+            } @else {
+              <div class="no-image-placeholder bg-white rounded shadow-sm d-flex align-items-center justify-content-center">
+                <div class="text-center text-muted">
+                  <i class="bi bi-image display-1 mb-3"></i>
+                  <p class="mb-0">Sin imagen disponible</p>
+                </div>
+              </div>
+            }
+          </div>
+        </div>
+        <div class="col-lg-6">
+          <div class="d-flex flex-column gap-4">
+            <div>
+              <span class="badge bg-light text-dark border px-3 py-2 text-uppercase fw-normal" style="font-size: 0.75rem; letter-spacing: 0.5px;">
+                {{ product()!.category?.name || 'Sin categoría' }}
+              </span>
+            </div>
+            <h1 class="display-5 fw-bold mb-0">{{ product()!.name }}</h1>
+            <p class="text-muted fs-6 lh-lg mb-0">{{ product()!.description }}</p>
+            <div>
+              <div class="fs-2 fw-semibold text-dark mb-1">
+                {{ product()!.price | currency:'ARS':'symbol':'1.0-0' }}
+              </div>
+              <small class="text-muted">Precio por unidad</small>
+            </div>
+            <div class="alert alert-light border mb-0">
+              <i class="bi bi-box-seam me-2"></i>
+              @if (product()!.stock > 0) {
+                <span>
+                  <strong>{{ product()!.stock - cartService.getProductQuantity(product()!.id) }}</strong>
+                  {{ (product()!.stock - cartService.getProductQuantity(product()!.id)) === 1 ? 'unidad disponible' : 'unidades disponibles' }}
+                </span>
+              } @else {
+                <span class="text-danger fw-semibold">Sin stock</span>
+              }
+            </div>
+
+            <hr class="my-0">
+            @if (!cartService.isInCart(product()!.id)) {
+              <button
+                class="btn btn-dark btn-lg w-100 py-3"
+                [disabled]="product()!.stock === 0"
+                (click)="addToCart()">
+                <i class="bi bi-cart-plus me-2"></i>
+                Agregar al carrito
+              </button>
+            }
+
+            @else {
+              <div class="d-flex flex-column gap-3">
+                <div class="quantity-controls d-flex align-items-center border rounded bg-white">
+                  <button
+                    class="btn-link flex-shrink-0"
+                    (click)="cartService.decrementQuantity(product()!.id)"
+                    [disabled]="cartService.getProductQuantity(product()!.id) <= 1">
+                    −
+                  </button>
+
+                  <span class="flex-grow-1 text-center fw-semibold fs-5">
+                    {{ cartService.getProductQuantity(product()!.id) }}
+                  </span>
+
+                  <button
+                    class="btn-link flex-shrink-0"
+                    (click)="cartService.incrementQuantity(product()!.id)"
+                    [disabled]="cartService.getProductQuantity(product()!.id) >= product()!.stock">
+                    +
+                  </button>
+                </div>
+
+                <div class="d-flex align-items-center justify-content-between p-3 bg-success bg-opacity-10 border border-success border-opacity-25 rounded">
+                  <small class="text-success fw-medium">
+                    <i class="bi bi-check-circle-fill me-2"></i>
+                    {{ cartService.getProductQuantity(product()!.id) }}
+                    {{ cartService.getProductQuantity(product()!.id) === 1 ? 'unidad' : 'unidades' }} en tu carrito
+                  </small>
+                  <button
+                    class="btn btn-sm btn-link text-danger p-0 text-decoration-none"
+                    (click)="cartService.removeFromCart(product()!.id)"
+                    title="Eliminar del carrito">
+                    <i class="bi bi-trash"></i>
+                  </button>
+                </div>
+              </div>
+            }
+
+            <hr class="my-0">
+
+            <div class="d-flex flex-column gap-3">
+              <div class="d-flex align-items-start gap-3">
+                <i class="bi bi-truck text-success fs-5"></i>
+                <small class="text-muted lh-base">Envío gratuito en compras superiores a $50.000</small>
+              </div>
+              <div class="d-flex align-items-start gap-3">
+                <i class="bi bi-arrow-repeat text-success fs-5"></i>
+                <small class="text-muted lh-base">Devoluciones sin cargo dentro de los 30 días</small>
+              </div>
+              <div class="d-flex align-items-start gap-3">
+                <i class="bi bi-shield-check text-success fs-5"></i>
+                <small class="text-muted lh-base">Garantía de autenticidad y calidad premium</small>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+      </div>
+    </div>
+  }
+
+  @if (!product() && !spinner() && !error()) {
+    <div class="container text-center py-5">
+      <div class="card border-0 shadow-sm p-5">
+        <i class="bi bi-search display-1 text-muted mb-4"></i>
+        <p class="fs-4 mb-4">Producto no encontrado</p>
+        <a routerLink="/products" class="btn btn-dark btn-lg">
+          <i class="bi bi-arrow-left me-2"></i> Volver a productos
+        </a>
+      </div>
+    </div>
+  }
+
+</div>

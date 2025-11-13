@@ -1,11 +1,13 @@
-import { Component, computed, inject } from '@angular/core';
+import { Component, computed, inject, signal } from '@angular/core';
 import { RouterLink, RouterLinkActive } from '@angular/router';
+import { CommonModule } from '@angular/common';
 import { AuthService } from '../../../core/services/auth.service';
+import { CartService } from '../../../core/services/cart-service';
 
 @Component({
   selector: 'app-header',
   standalone: true,
-  imports: [RouterLink, RouterLinkActive],
+  imports: [CommonModule, RouterLink, RouterLinkActive],
   templateUrl: './header.component.html',
   styleUrls: ['./header.component.scss'],
 })
@@ -22,4 +24,17 @@ export class HeaderComponent {
   onLogout(): void {
     this.authService.logout();
   }
+
+
+  isCartOpen = signal(false);
+
+  constructor(public cartService: CartService) {}
+
+  toggleCart(): void {
+   this.isCartOpen.update(value => !value);
+    }
+
+    closeCart(): void {
+      this.isCartOpen.set(false);
+    }
 }

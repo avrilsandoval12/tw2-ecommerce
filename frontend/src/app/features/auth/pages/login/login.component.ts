@@ -7,7 +7,7 @@ import {
   FormControl,
   Validators,
 } from '@angular/forms';
-import { Router, ActivatedRoute } from '@angular/router';
+import {Router, ActivatedRoute, RouterLink} from '@angular/router';
 import { AuthService } from '../../../../core/services/auth.service';
 import { LoginRequest } from '../../../../shared/interfaces/auth.model';
 
@@ -19,7 +19,7 @@ interface LoginForm {
 @Component({
   selector: 'app-login',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule],
+  imports: [CommonModule, ReactiveFormsModule, RouterLink],
   templateUrl: './login.component.html',
   styleUrl: './login.component.scss',
 })

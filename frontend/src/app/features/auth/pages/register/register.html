@@ -5,27 +5,30 @@
         <div class="card-body p-4 p-sm-5">
 
           <h2 class="card-title text-center mb-4 fw-light fs-3">
-            ✨ ¡Crea tu cuenta!
+            ¡Crea tu cuenta!
           </h2>
 
-          <!-- ALERTA ÉXITO -->
           @if (successMessage()) {
-            <div class="alert alert-success d-flex align-items-start gap-2 py-2 px-3 shadow-sm border-0 mb-3">
-              <div class="flex-grow-1 small">
-                <div>{{ successMessage() }}</div>
+            <div class="d-flex flex-column gap-2 mt-2">
+              <div class="alert alert-success border-0 shadow-sm rounded-3 py-2 px-3 d-flex align-items-center">
+                <i class="bi bi-check-circle-fill me-2"></i>
+                <p class="m-0 small fw-semibold">{{ successMessage() }}</p>
               </div>
             </div>
           }
 
-          <!-- ALERTA ERRORES BACKEND -->
-          @if (errorMessage().length) {
-            <div class="alert alert-danger d-flex align-items-start gap-2 py-2 px-3 shadow-sm border-0">
 
-                @for (msg of errorMessage(); track $index) {
-                  <p class="text-danger">{{ msg }}</p>
-                }
+          @if (errorMessage().length) {
+            <div class="d-flex flex-column mt-2">
+              @for (msg of errorMessage(); track $index) {
+                <div class="alert alert-danger border-0 shadow-sm rounded-3 py-2 px-3 d-flex align-items-center">
+                  <i class="bi bi-exclamation-circle-fill me-2"></i>
+                  <p class="m-0 small fw-semibold">{{ msg }}</p>
+                </div>
+              }
             </div>
           }
+
 
           <form [formGroup]="myForm" (ngSubmit)="onSubmit()">
 
@@ -90,6 +93,12 @@
             </div>
 
           </form>
+          <div class="text-center mt-3">
+            <small class="text-muted">
+              ¿Ya tienes cuenta?
+              <a routerLink="/login" class="text-decoration-none">Inicia Sesión</a>
+            </small>
+          </div>
 
         </div>
       </div>
