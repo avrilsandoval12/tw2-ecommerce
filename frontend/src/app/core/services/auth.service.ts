@@ -1,5 +1,5 @@
 import { HttpClient } from '@angular/common/http';
-import { inject, Injectable, signal } from '@angular/core';
+import { inject, Injectable, signal, computed } from '@angular/core';
 import { Router } from '@angular/router';
 import { environment } from '../../../environments/environment.development';
 import { catchError, Observable, tap, throwError } from 'rxjs';
@@ -19,12 +19,29 @@ export class AuthService {
   isAuthenticated = signal<boolean>(!!this.getToken());
   currentUser = signal<UserProfile | null>(this.loadUserFromStorage());
   private productService = inject(ProductService);
+  //isAdmin = computed(() => this.currentUser()?.role === 'ADMIN');
+  isAdmin = computed(() => {
+  const user = this.currentUser();
+  const userRole = user?.role;
+  const requiredRole = 'ADMIN'; // Asumiendo que este es el rol que esperas
+
+  // 🐛 DEBUG: Muestra el rol actual y lo que estás esperando
+  console.log('DEBUG [AuthService]: Rol actual del usuario:', userRole);
+  console.log('DEBUG [AuthService]: Rol requerido:', requiredRole);
+
+  // Solución recomendada para mayúsculas/minúsculas
+  const isMatch = userRole?.toUpperCase() === requiredRole;
+
+  console.log('DEBUG [AuthService]: ¿Coinciden los roles (ADMIN)?', isMatch);
+  
+  return isMatch;
+  });
 
   login(credentials: LoginRequest): Observable<AuthResponse> {
     return this.http.post<AuthResponse>(`${environment.apiUrl}/auth/login`, credentials).pipe(
       tap((response) => {
         this.setToken(response.data.token);
-        this.currentUser.set(response.data.user);
+        this.setUser(response.data.user);
         this.isAuthenticated.set(true);
       }),
       catchError((error) => {

@@ -166,3 +166,16 @@ tr:nth-child(even) {
     background-color: #6c757d;
     color: white;
 }
+.modal-backdrop {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    /* --- CAMBIO CRUCIAL --- */
+    z-index: 9999; /* Usa un valor muy alto para asegurar que esté sobre todo */
+}

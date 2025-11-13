@@ -1,19 +1,37 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
+
+interface ApiResponse {
+  message: string;
+  data: any[]; 
+}
+
+interface Category {
+    id: number;
+    name: string;
+}
 
 @Injectable({
   providedIn: 'root'
 })
 export class ProductsAdminService {
-  private apiUrl = '/api/products'; // Asegúrate de que esta URL coincida con tus rutas de Express
+  private apiUrl = '/api/products'; 
+  private categoriesApiUrl = '/api/categories';
 
   constructor(private http: HttpClient) { }
 
-  // 1. Obtener la lista (READ)
-  // Aunque no está protegido por isAdmin, es útil para la tabla de administración.
+  getCategories(): Observable<Category[]> {
+    return this.http.get<ApiResponse>(this.categoriesApiUrl).pipe(
+      map(response => response.data as Category[]) 
+    );
+  }
+
   getAllProducts(): Observable<any[]> {
-    return this.http.get<any[]>(this.apiUrl);
+    return this.http.get<ApiResponse>(this.apiUrl).pipe(
+      map(response => response.data) 
+    );
   }
 
   // 2. Crear nueva cartera (CREATE) - Protegido en el backend por isAdmin
