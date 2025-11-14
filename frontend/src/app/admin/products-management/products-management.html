@@ -1,0 +1,142 @@
+<div class="container">
+    
+    <h2>Administración de Carteras</h2>
+
+    <!-- Botón para ABRIR el modal de CREAR (CORREGIDO: openModal(false)) -->
+    <button class="add-button" (click)="openModal(false)">
+        Agregar Nueva Cartera
+    </button>
+
+    <!-- Contenedor de la Tabla -->
+    <div class="table-container">
+        <table>
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Nombre</th>
+                    <th>Precio ($)</th>
+                    <th>Stock</th>
+                    <th>Categoría</th>
+                    <th>Acciones</th> <!-- Columna para botones de gestión -->
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Itera sobre la lista de carteras (products) -->
+                <tr *ngFor="let product of products">
+                    <td>{{ product.id }}</td>
+                    <td>{{ product.name }}</td>
+                    <!-- Usamos el pipe currency/number para formatear el precio -->
+                    <td>{{ product.price | currency:'USD':'symbol':'1.2-2' }}</td>
+                    <td>{{ product.stock }}</td>
+                    <!-- Usamos la función helper para mostrar el nombre -->
+                    <td>{{ getCategoryName(product.categoryid) }}</td>
+                    
+                    <!-- Columna de Acciones -->
+                    <td class="actions">
+                        <!-- Botón EDITAR: Llama a openModal(true, producto) -->
+                        <button class="edit-btn" (click)="openModal(true, product)">
+                            Editar
+                        </button>
+                        
+                        <!-- Botón ELIMINAR: Llama a onDelete(producto) -->
+                        <button class="delete-btn" (click)="onDelete(product)">
+                            Eliminar
+                        </button>
+                    </td>
+                </tr>
+                <!-- Mensaje si no hay productos -->
+                <tr *ngIf="products.length === 0">
+                  <td colspan="6" style="text-align: center; color: #6c757d;">No hay carteras registradas.</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- --- MODAL DE CREACIÓN/EDICIÓN --- -->
+<div *ngIf="isModalOpen" class="modal-backdrop">
+    <div class="modal-content">
+        
+        <!-- Título del Modal -->
+        <h3>{{ isEditing ? 'Editar Cartera' : 'Crear Nueva Cartera' }}</h3>
+        
+        <form [formGroup]="productForm" (ngSubmit)="onSubmit()">
+            
+            <!-- Campo Oculto ID (solo para edición) -->
+            <input type="hidden" formControlName="id">
+
+            <!-- Fila 1: Nombre -->
+            <div class="form-group">
+                <label for="name">Nombre de la Cartera</label>
+                <input id="name" type="text" formControlName="name">
+                <div *ngIf="productForm.get('name')?.invalid && (productForm.get('name')?.dirty || productForm.get('name')?.touched)" class="error-message">
+                    El nombre es requerido.
+                </div>
+            </div>
+
+            <!-- Fila 2: Descripción -->
+            <div class="form-group">
+                <label for="description">Descripción</label>
+                <textarea id="description" formControlName="description" rows="3"></textarea>
+                <div *ngIf="productForm.get('description')?.invalid && (productForm.get('description')?.dirty || productForm.get('description')?.touched)" class="error-message">
+                    La descripción es requerida.
+                </div>
+            </div>
+
+            <!-- Fila 3: Precio y Stock (Usamos style flex para layout) -->
+            <div style="display: flex; gap: 15px;">
+                <div class="form-group" style="flex: 1;">
+                    <label for="price">Precio ($)</label>
+                    <input id="price" type="number" formControlName="price" min="0.01">
+                    <div *ngIf="productForm.get('price')?.invalid && (productForm.get('price')?.dirty || productForm.get('price')?.touched)" class="error-message">
+                        El precio debe ser un número positivo.
+                    </div>
+                </div>
+                <div class="form-group" style="flex: 1;">
+                    <label for="stock">Stock</label>
+                    <input id="stock" type="number" formControlName="stock" min="0" step="1">
+                    <div *ngIf="productForm.get('stock')?.invalid && (productForm.get('stock')?.dirty || productForm.get('stock')?.touched)" class="error-message">
+                        El stock es requerido y debe ser &ge; 0.
+                    </div>
+                </div>
+            </div>
+
+            <!-- Fila 4: Archivo de Imagen y Categoría (SELECT) (Usamos style flex para layout) -->
+            <div style="display: flex; gap: 15px; margin-bottom: 25px;">
+                
+                <!-- Campo de Subida de Archivo (Imagen) -->
+                <div class="form-group" style="flex: 1;">
+                    <label for="imageFile">Subir Imagen</label>
+                    <input id="imageFile" type="file" (change)="onFileSelected($event)" accept="image/*" style="padding: 5px;">
+                    <div *ngIf="productForm.get('imgurl')?.invalid && (productForm.get('imgurl')?.dirty || productForm.get('imgurl')?.touched)" class="error-message">
+                        La imagen es requerida.
+                    </div>
+                </div>
+            </div>   
+            <!-- Campo de Categoría (SELECT) -->
+            <div class="form-group" style="flex: 1;">
+                <label for="categoryid">Categoría</label>
+                <select 
+                    id="categoryid" 
+                    formControlName="categoryid" 
+                    style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; font-size: 1rem;">
+                    <option [ngValue]="null" disabled>Seleccione una Categoría</option>
+                    <option *ngFor="let cat of categories" [ngValue]="cat.id">
+                        {{ cat.name }}
+                    </option>
+                </select>
+            </div>
+            
+            <!-- Botones de Acción -->
+            <div class="modal-actions">
+                <button type="button" (click)="closeModal()" class="cancel-button">
+                    Cancelar
+                </button>
+                <button type="submit" [disabled]="productForm.invalid" class="save-button">
+                    <!-- Muestra el mensaje de 'Completar Campos Requeridos' si es inválido -->
+                    {{ productForm.invalid ? 'Completar Campos Requeridos' : (isEditing ? 'Guardar Cambios' : 'Crear Cartera') }}
+                </button>
+            </div>
+        </form>
+    </div>
+</div>

@@ -17,6 +17,7 @@ export interface UserProfile {
   lastname: string;
   email: string;
   address: string;
+  role?: string;
 }
 
 export interface AuthRegister {

@@ -1,6 +1,7 @@
 import { Request, Response, NextFunction } from "express";
 import { verifyToken } from "../utils/auth";
-import { JwtPayload } from "../types/auth.types";
+import { JwtPayload } from "../types/auth.types"; 
+import { UserRole } from "@prisma/client"; 
 
 export const authGuard = (req: Request, res: Response, next: NextFunction) => {
     try {
@@ -11,13 +12,13 @@ export const authGuard = (req: Request, res: Response, next: NextFunction) => {
         }
 
         const token = authHeader.split(" ")[1];
-        const decoded = verifyToken(token) as JwtPayload | null;
+        const decoded = verifyToken(token) as JwtPayload | null; 
 
         if (!decoded) {
             return res.status(401).json({ message: "Token inválido" });
         }
 
-        req.user = decoded;
+        req.user = decoded; 
 
         next();
     } catch (error) {
@@ -25,4 +26,15 @@ export const authGuard = (req: Request, res: Response, next: NextFunction) => {
             message: "Token inválido o expirado",
         });
     }
+};
+
+export const isAdmin = (req: Request, res: Response, next: NextFunction) => {
+    if (!req.user || req.user.role !== UserRole.ADMIN) {
+        return res.status(403).json({
+            message: "Acceso denegado. Se requiere un rol de administrador.",
+        });
+    }
+
+    // El usuario es ADMIN
+    next();
 };

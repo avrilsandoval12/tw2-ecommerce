@@ -5,13 +5,25 @@ import { PROFILE_ROUTES } from './features/profile/profile.routes';
 import { PRODUCTS_ROUTES } from './features/products/products.routes';
 import { CART_ROUTES } from './features/cart/cart.routes';
 import {authGuard} from './core/guards/auth-guard';
+import { ProductsManagementComponent } from './admin/products-management/products-management'; 
+import { adminGuard } from './core/guards/admin-guard';
+
+export const ADMIN_ROUTES: Routes = [
+  {
+    path: 'admin/products',
+    component: ProductsManagementComponent,
+    canActivate: [adminGuard], // ¡Protegido por el guard!
+  },
+];
 
 export const routes: Routes = [
+  ...ADMIN_ROUTES,
   {
     path: '',
     children: [
       ...HOME_ROUTES,
       ...PRODUCTS_ROUTES,
+
     ]
   },
   {
@@ -19,7 +31,7 @@ export const routes: Routes = [
     canActivate: [authGuard],
     children: [
       ...PROFILE_ROUTES,
-      ...CART_ROUTES
+      ...CART_ROUTES,
     ]
   },
   {

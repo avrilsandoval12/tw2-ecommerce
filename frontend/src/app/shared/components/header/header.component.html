@@ -17,8 +17,13 @@
         </li>
       </ul>
 
-            <ul class="navbar-nav align-items-center gap-2">
-              @if(isAuthenticated()){
+      <ul class="navbar-nav align-items-center gap-2">
+        @if(isAdmin()) {            
+        <li class="nav-item">
+          <a class="nav-link" routerLink="/admin/products" routerLinkActive="active">Editor de Productos</a>
+        </li>
+        }
+        @if(isAuthenticated()){
         <li class="nav-item">
           <button
             class="btn btn-link nav-link position-relative p-0 border-0 text-decoration-none"

@@ -2,7 +2,7 @@ import { UpdateUserDTO, User, UserDTO } from "../types/user.types";
 import prisma from "../config/prisma";
 
 export interface IUserRepository {
-    createUser(user: User);
+    createUser(user: Omit<User, 'id'>): Promise<User>;
     findByEmail(email: string);
     findById(id: number);
     updateUser(id: number, data: UpdateUserDTO): Promise<UserDTO>;
@@ -14,7 +14,8 @@ export interface IUserRepository {
 
 export class UserRepository implements IUserRepository {
     async createUser(user: User) {
-        return prisma.user.create({ data: user });
+        const { id, ...dataToCreate } = user;
+        return prisma.user.create({ data: dataToCreate as any });
     }
 
     async findByEmail(email: string) {
@@ -44,6 +45,7 @@ export class UserRepository implements IUserRepository {
             name: updatedUser.name,
             lastname: updatedUser.lastname,
             address: updatedUser.address,
+            role: updatedUser.role,
         };
     }
 
