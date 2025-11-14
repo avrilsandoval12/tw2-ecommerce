@@ -4,6 +4,7 @@ import { AuthResponse } from "../types/auth.types";
 import { hashPassword, checkPassword, generateToken } from "../utils/auth";
 import { UnauthorizedException } from "../exceptions/UnauthorizedException";
 import { BadRequestException } from "../exceptions/BadRequestException";
+import { UserRole } from "@prisma/client";
 
 export interface IAuthService {
     create(user: User): Promise<void>;
@@ -45,7 +46,7 @@ export class AuthService implements IAuthService {
             throw new UnauthorizedException("Email o contraseña incorrectos");
         }
 
-        const token = generateToken(user.id, user.email);
+        const token = generateToken(user.id, user.email, user.role);
 
         return {
             token,
@@ -54,6 +55,7 @@ export class AuthService implements IAuthService {
                 lastname: user.lastname,
                 email: user.email,
                 address: user.address,
+                role: user.role,
             },
         };
     }

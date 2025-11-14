@@ -5,6 +5,7 @@ export interface User {
     name: string;
     lastname: string;
     address: string;
+    role: string;
 }
 
 export interface UserDTO {
@@ -12,6 +13,7 @@ export interface UserDTO {
     name: string;
     lastname: string;
     address: string;
+    role: string;
 }
 
 export interface UpdateUserDTO {

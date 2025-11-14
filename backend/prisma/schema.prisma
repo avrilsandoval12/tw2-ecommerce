@@ -6,18 +6,15 @@ datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
-enum UserRole {
-  USER // Usuario estándar (por defecto)
-  ADMIN // Usuario administrador
-}
+
 model User {
-  id       Int    @id @default(autoincrement())
+  id       Int      @id @default(autoincrement())
   name     String
-  email    String @unique
+  email    String   @unique
   lastname String
   password String
   address  String
-  role      UserRole @default(USER)
+  role     UserRole @default(USER)
 }
 
 model category {
@@ -35,4 +32,9 @@ model product {
   stock       Int?
   categoryid  Int
   category    category @relation(fields: [categoryid], references: [id], onDelete: NoAction, onUpdate: NoAction)
+}
+
+enum UserRole {
+  USER
+  ADMIN
 }

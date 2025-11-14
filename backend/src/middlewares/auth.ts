@@ -29,7 +29,6 @@ export const authGuard = (req: Request, res: Response, next: NextFunction) => {
 };
 
 export const isAdmin = (req: Request, res: Response, next: NextFunction) => {
-    
     if (!req.user || req.user.role !== UserRole.ADMIN) {
         return res.status(403).json({
             message: "Acceso denegado. Se requiere un rol de administrador.",

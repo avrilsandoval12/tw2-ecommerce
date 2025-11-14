@@ -52,4 +52,55 @@ export class ProductController {
             });
         }
     }
+
+    static async update(req: Request, res: Response) {
+        try {
+            const id = Number(req.params.id);
+            const data = req.body;
+
+            const updatedProduct = await productService.updateProduct(id, data);
+
+            if (!updatedProduct) {
+                return res.status(404).json({
+                    message: "Product not found for update",
+                });
+            }
+
+            res.status(200).json({
+                message: "Product updated successfully",
+                data: updatedProduct,
+            });
+        } catch (error) {
+            console.error(error);
+            res.status(500).json({
+                message: "Error updating product",
+            });
+        }
+    }
+
+    static async delete(req: Request, res: Response) {
+        try {
+            const id = Number(req.params.id);
+
+            const result = await productService.deleteProduct(id);
+            
+            if (!result) {
+                return res.status(404).json({
+                    message: "Product not found for deletion",
+                });
+            }
+
+            // Nota: Algunas APIs devuelven 204 (No Content) para delete exitoso sin body. 
+            // Usamos 200/204 según la preferencia. Devolveremos 200 con un mensaje.
+            res.status(200).json({
+                message: "Product deleted successfully",
+                data: result, // result podría ser el producto eliminado o un mensaje de confirmación
+            });
+        } catch (error) {
+            console.error(error);
+            res.status(500).json({
+                message: "Error deleting product",
+            });
+        }
+    }
 }
