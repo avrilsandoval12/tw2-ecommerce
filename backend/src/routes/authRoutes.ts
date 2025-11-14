@@ -30,4 +30,20 @@ router.post('/login',
     AuthController.login
 );
 
+router.post('/forgot-password',
+    body('email')
+        .isEmail().withMessage("Email no valido"),
+    handleInputError,
+    AuthController.requestPasswordReset
+);
+
+router.post('/reset-password',
+    body('token')
+        .notEmpty().withMessage("El token es obligatorio"),
+    body('password')
+        .isLength({min: 8}).withMessage("La contrasenia debe contener al menos 8 caracteres"),
+    handleInputError,
+    AuthController.resetPassword
+);
+
 export default router;

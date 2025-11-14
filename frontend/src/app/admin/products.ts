@@ -2,10 +2,11 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
+import { environment } from '../../environments/environment';
 
 interface ApiResponse {
   message: string;
-  data: any[]; 
+  data: any[];
 }
 
 interface Category {
@@ -17,20 +18,20 @@ interface Category {
   providedIn: 'root'
 })
 export class ProductsAdminService {
-  private apiUrl = '/api/products'; 
-  private categoriesApiUrl = '/api/categories';
+  private apiUrl = `${environment.apiUrl}/products`;
+  private categoriesApiUrl = `${environment.apiUrl}/categories`;
 
   constructor(private http: HttpClient) { }
 
   getCategories(): Observable<Category[]> {
     return this.http.get<ApiResponse>(this.categoriesApiUrl).pipe(
-      map(response => response.data as Category[]) 
+      map(response => response.data as Category[])
     );
   }
 
   getAllProducts(): Observable<any[]> {
     return this.http.get<ApiResponse>(this.apiUrl).pipe(
-      map(response => response.data) 
+      map(response => response.data)
     );
   }
 

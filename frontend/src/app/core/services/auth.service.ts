@@ -7,6 +7,7 @@ import { LoginRequest, AuthResponse, UserProfile } from '../../shared/interfaces
 import { AuthRegister } from '../models/auth.model';
 import { ProductService } from './product.service';
 
+
 @Injectable({
   providedIn: 'root',
 })
@@ -14,6 +15,7 @@ export class AuthService {
   private readonly http = inject(HttpClient);
   private router = inject(Router);
   private readonly tokenKey = environment.tokenKey;
+  private apiUrl = environment.apiUrl;
 
   isAuthenticated = signal<boolean>(!!this.getToken());
   currentUser = signal<UserProfile | null>(this.loadUserFromStorage());
@@ -71,5 +73,20 @@ export class AuthService {
     const userJson = localStorage.getItem('currentUser');
     const user = userJson ? JSON.parse(userJson) : null;
     return user;
+  }
+
+  requestPasswordReset(email: string): Observable<any> {
+    return this.http.post(`${this.apiUrl}/auth/forgot-password`, { 
+      email: email,
+   
+      frontendBaseUrl: window.location.origin 
+    });
+  }
+
+  resetPassword(token: string, password: string): Observable<any> {
+    return this.http.post(`${this.apiUrl}/auth/reset-password`, {
+      token: token,
+      password: password
+    });
   }
 }

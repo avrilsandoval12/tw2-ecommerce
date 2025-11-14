@@ -5,6 +5,8 @@ export interface User {
     name: string;
     lastname: string;
     address: string;
+    passwordResetToken?: string | null;
+    passwordResetExpires?: Date | null;
 }
 
 export interface UserDTO {
