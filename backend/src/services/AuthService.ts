@@ -18,7 +18,7 @@ export class AuthService implements IAuthService {
         const userExists = await this.userRepository.findByEmail(email);
 
         if (userExists) {
-            throw new BadRequestException("El email ya esta registrado");
+            throw new BadRequestException("El email ya está registrado");
         }
 
         user.password = await hashPassword(password);
@@ -27,7 +27,7 @@ export class AuthService implements IAuthService {
             await this.userRepository.createUser(user);
         } catch (e) {
             throw new Error(
-                "Hubo un error al crear la cuenta, intente mas tarde"
+                "Hubo un error al crear la cuenta, intente más tarde"
             );
         }
     }
@@ -45,7 +45,7 @@ export class AuthService implements IAuthService {
             throw new UnauthorizedException("Email o contraseña incorrectos");
         }
 
-        const token = generateToken(user.id, user.email);
+        const token = generateToken(user.id!, user.email);
 
         return {
             token,
@@ -54,6 +54,7 @@ export class AuthService implements IAuthService {
                 lastname: user.lastname,
                 email: user.email,
                 address: user.address,
+                role: user.role,
             },
         };
     }

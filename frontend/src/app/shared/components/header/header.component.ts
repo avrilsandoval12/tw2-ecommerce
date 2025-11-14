@@ -19,22 +19,21 @@ export class HeaderComponent {
 
   userName = computed(() => this.currentUser()?.name || 'Usuario');
 
-  isAdmin = computed(() => this.authService.isAdmin());
+  isAdmin = this.authService.isAdmin;
 
   onLogout(): void {
     this.authService.logout();
   }
-
 
   isCartOpen = signal(false);
 
   constructor(public cartService: CartService) {}
 
   toggleCart(): void {
-   this.isCartOpen.update(value => !value);
-    }
+    this.isCartOpen.update((value) => !value);
+  }
 
-    closeCart(): void {
-      this.isCartOpen.set(false);
-    }
+  closeCart(): void {
+    this.isCartOpen.set(false);
+  }
 }

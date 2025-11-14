@@ -4,14 +4,13 @@ import { Router } from '@angular/router';
 import { environment } from '../../../environments/environment.development';
 import { catchError, Observable, tap, throwError } from 'rxjs';
 import { LoginRequest, AuthResponse, UserProfile } from '../../shared/interfaces/auth.model';
-import {AuthRegister} from '../models/auth.model'
-import {ProductService} from './product.service';
+import { AuthRegister } from '../models/auth.model';
+import { ProductService } from './product.service';
 
 @Injectable({
   providedIn: 'root',
 })
 export class AuthService {
-
   private readonly http = inject(HttpClient);
   private router = inject(Router);
   private readonly tokenKey = environment.tokenKey;
@@ -19,23 +18,8 @@ export class AuthService {
   isAuthenticated = signal<boolean>(!!this.getToken());
   currentUser = signal<UserProfile | null>(this.loadUserFromStorage());
   private productService = inject(ProductService);
-  //isAdmin = computed(() => this.currentUser()?.role === 'ADMIN');
-  isAdmin = computed(() => {
-  const user = this.currentUser();
-  const userRole = user?.role;
-  const requiredRole = 'ADMIN'; // Asumiendo que este es el rol que esperas
 
-  // 🐛 DEBUG: Muestra el rol actual y lo que estás esperando
-  console.log('DEBUG [AuthService]: Rol actual del usuario:', userRole);
-  console.log('DEBUG [AuthService]: Rol requerido:', requiredRole);
-
-  // Solución recomendada para mayúsculas/minúsculas
-  const isMatch = userRole?.toUpperCase() === requiredRole;
-
-  console.log('DEBUG [AuthService]: ¿Coinciden los roles (ADMIN)?', isMatch);
-  
-  return isMatch;
-  });
+  isAdmin = computed(() => this.currentUser()?.role === 'ADMIN');
 
   login(credentials: LoginRequest): Observable<AuthResponse> {
     return this.http.post<AuthResponse>(`${environment.apiUrl}/auth/login`, credentials).pipe(
@@ -57,7 +41,6 @@ export class AuthService {
     this.currentUser.set(null);
     this.isAuthenticated.set(false);
     this.router.navigate(['/login']);
-
     this.productService.clearFilters();
   }
 
@@ -66,7 +49,9 @@ export class AuthService {
   }
 
   updateCurrentUser(user: UserProfile): void {
-    this.setUser(user);
+    const currentRole = this.currentUser()?.role;
+    const updatedUser = { ...user, role: currentRole };
+    this.setUser(updatedUser);
   }
 
   private setUser(user: UserProfile): void {
@@ -74,8 +59,8 @@ export class AuthService {
     this.currentUser.set(user);
   }
 
-  register(data : AuthRegister) {
-    return this.http.post(`${environment.apiUrl}/auth/register`, data)
+  register(data: AuthRegister) {
+    return this.http.post(`${environment.apiUrl}/auth/register`, data);
   }
 
   private setToken(token: string): void {
@@ -84,6 +69,7 @@ export class AuthService {
 
   private loadUserFromStorage(): UserProfile | null {
     const userJson = localStorage.getItem('currentUser');
-    return userJson ? JSON.parse(userJson) : null;
+    const user = userJson ? JSON.parse(userJson) : null;
+    return user;
   }
 }

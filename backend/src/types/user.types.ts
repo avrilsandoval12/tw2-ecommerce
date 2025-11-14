@@ -12,6 +12,7 @@ export interface UserDTO {
     name: string;
     lastname: string;
     address: string;
+    role?: string;
 }
 
 export interface UpdateUserDTO {
