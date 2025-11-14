@@ -23,6 +23,7 @@ export class UserService implements IUserService {
             lastname: user.lastname,
             email: user.email,
             address: user.address,
+            role: user.role,
         };
     }
 

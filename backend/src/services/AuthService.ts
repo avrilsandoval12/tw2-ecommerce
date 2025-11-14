@@ -7,6 +7,7 @@ import { BadRequestException } from "../exceptions/BadRequestException";
 import * as crypto from 'crypto'; // Importar crypto
 import { sendEmail } from '../utils/email'; // Importar email util
 import { ResourceNotFoundException } from "../exceptions/ResourceNotFoundException"
+import { UserRole } from "@prisma/client";
 
 export interface IAuthService {
     create(user: User): Promise<void>;
@@ -51,7 +52,7 @@ export class AuthService implements IAuthService {
             throw new UnauthorizedException("Email o contraseña incorrectos");
         }
 
-        const token = generateToken(user.id!, user.email);
+        const token = generateToken(user.id, user.email, user.role);
 
         return {
             token,

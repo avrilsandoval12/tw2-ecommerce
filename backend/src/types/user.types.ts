@@ -7,6 +7,7 @@ export interface User {
     address: string;
     passwordResetToken?: string | null;
     passwordResetExpires?: Date | null;
+    role: string;
 }
 
 export interface UserDTO {
