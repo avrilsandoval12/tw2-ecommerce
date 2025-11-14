@@ -6,6 +6,10 @@ export interface IUserRepository {
     findByEmail(email: string);
     findById(id: number);
     updateUser(id: number, data: UpdateUserDTO): Promise<UserDTO>;
+    saveResetToken(id: number, token: string, expires: Date);
+    clearResetToken(id: number);
+    findByResetToken(token: string);
+    updatePasswordAndClearToken(id: number, passwordHash: string);
 }
 
 export class UserRepository implements IUserRepository {
@@ -42,4 +46,47 @@ export class UserRepository implements IUserRepository {
             address: updatedUser.address,
         };
     }
+
+    async saveResetToken(id: number, token: string, expires: Date) {
+        return prisma.user.update({
+            where: { id },
+            data: {
+                passwordResetToken: token,
+                passwordResetExpires: expires,
+            },
+        });
+    }
+
+    async clearResetToken(id: number) {
+        return prisma.user.update({
+            where: { id },
+            data: {
+                passwordResetToken: null,
+                passwordResetExpires: null,
+            },
+        });
+    }
+
+    async findByResetToken(token: string) {
+        return await prisma.user.findFirst({
+            where: {
+                passwordResetToken: token,
+                passwordResetExpires: {
+                    gt: new Date(), 
+                },
+            },
+        });
+    }
+
+async updatePasswordAndClearToken(id: number, passwordHash: string) {
+        return prisma.user.update({
+            where: { id },
+            data: {
+                password: passwordHash,
+                passwordResetToken: null,
+                passwordResetExpires: null,
+            },
+        });
+    }
+
 }
